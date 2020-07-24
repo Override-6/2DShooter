@@ -3,8 +3,8 @@ package fr.override.game.shooter;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.override.game.shooter.states.GameStateManager;
-import fr.override.game.shooter.states.PlayState;
+import fr.override.game.shooter.api.other.states.GameStateManager;
+import fr.override.game.shooter.session.PlayState;
 
 public class Main extends ApplicationAdapter {
     private final GameStateManager manager = new GameStateManager();

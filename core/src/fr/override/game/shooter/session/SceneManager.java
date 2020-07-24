@@ -3,88 +3,48 @@ package fr.override.game.shooter.session;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import fr.override.game.shooter.actions.Action;
-import fr.override.game.shooter.actions.ActionCompleter;
-import fr.override.game.shooter.actions.SimpleAction;
+import fr.override.game.shooter.api.session.character.Collidable;
+import fr.override.game.shooter.api.session.character.GameSessionObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class SceneManager {
 
-    private final SortedSet<GameSessionObject> objects = new TreeSet<>();
-    private boolean updating = false;
-    private final List<ObjectRemovalTicket> tickets = new ArrayList<ObjectRemovalTicket>(){
-        @Override
-        public boolean remove(Object o) {
-            super.remove(o);
-            System.out.println("object removed !");
-            return false;
-        }
+    //   private final Set<GameSessionObject> objects = new TreeSet<>();
+    //FIXME some objects does not get removed with a TreeSet
+    private final Set<GameSessionObject> objects = new HashSet<>();
 
-        @Override
-        public void clear() {
-            super.clear();
-            System.out.println("cleared !");
-        }
-
-        @Override
-        public boolean add(ObjectRemovalTicket ticket) {
-            super.add(ticket);
-            System.out.println("added object !");
-            return false;
-        }
-    };
+    private CyclickTask currentTask = CyclickTask.NOTHING;
 
     public void addObject(GameSessionObject object) {
         objects.add(object);
-        if (updating) {
+        if (currentTask == CyclickTask.UPDATING) {
             object.update(Gdx.graphics.getDeltaTime());
         }
     }
 
-    public Action removeObject(GameSessionObject object) {
-        SimpleAction action = Action.build();
-        ObjectRemovalTicket ticket = new ObjectRemovalTicket(action, object);
-        tickets.add(ticket);
-        return action;
+    public void removeObject(GameSessionObject object) {
+        objects.remove(object);
+        object.setGameSession(null);
     }
 
     public void update(float deltaTime) {
-        updating = true;
+        currentTask = CyclickTask.UPDATING;
         for (GameSessionObject object : new ArrayList<>(objects)) {
-            if (checkTickets(object))
-                continue;
             object.update(deltaTime);
         }
+        currentTask = CyclickTask.CHECKING_COLLISIONS;
         handleCollisions();
-        updating = false;
-    }
-
-    private boolean checkTickets(GameSessionObject object) {
-        boolean removed = false;
-        for (ObjectRemovalTicket ticket : new ArrayList<>(tickets)) {
-            if (ticket.object == object) {
-                completeTicket(ticket, !removed);
-                tickets.remove(ticket);
-                removed = true;
-            }
-        }
-        return removed;
-    }
-
-    private void completeTicket(ObjectRemovalTicket ticket, boolean removeGameSession) {
-        System.out.println("a");
-        objects.remove(ticket.object);
-        System.out.println("b");
-        if (removeGameSession)
-            ticket.object.setGameSession(null);
-        System.out.println("c");
-        ticket.actionCompleter.onActionCompleted();
-        System.out.println("ZD");
+        currentTask = CyclickTask.NOTHING;
     }
 
     public void render(SpriteBatch batch) {
+        currentTask = CyclickTask.RENDERING;
         new ArrayList<>(objects).forEach(object -> object.render(batch));
+        currentTask = CyclickTask.NOTHING;
     }
 
     public void dispose() {
@@ -121,15 +81,12 @@ public class SceneManager {
 
         });
     }
+    private enum CyclickTask {
+        UPDATING,
+        CHECKING_COLLISIONS,
+        RENDERING,
+        NOTHING
 
-    private static class ObjectRemovalTicket {
-        private final ActionCompleter actionCompleter;
-        private final GameSessionObject object;
-
-        public ObjectRemovalTicket(ActionCompleter actionCompleter, GameSessionObject object) {
-            this.actionCompleter = actionCompleter;
-            this.object = object;
-        }
     }
 
 }

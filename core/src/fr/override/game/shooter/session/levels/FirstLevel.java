@@ -1,13 +1,12 @@
 package fr.override.game.shooter.session.levels;
 
 import com.badlogic.gdx.graphics.Color;
-import fr.override.game.shooter.components.DangerousComponent;
-import fr.override.game.shooter.components.HealingComponent;
-import fr.override.game.shooter.components.RectangleComponent;
-import fr.override.game.shooter.items.Item;
-import fr.override.game.shooter.items.ItemSpawner;
-import fr.override.game.shooter.items.ItemType;
-import fr.override.game.shooter.session.GameSessionObject;
+import fr.override.game.shooter.api.session.levels.Level;
+import fr.override.game.shooter.session.components.DangerousComponent;
+import fr.override.game.shooter.session.components.HealingComponent;
+import fr.override.game.shooter.api.session.comps.RectangleComponent;
+import fr.override.game.shooter.session.items.ItemSpawner;
+import fr.override.game.shooter.api.session.character.GameSessionObject;
 
 import java.util.HashSet;
 import java.util.Set;
