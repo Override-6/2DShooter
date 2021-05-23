@@ -1,10 +1,10 @@
 package fr.override.game.shooter.session.items;
 
-import fr.override.game.shooter.api.other.actions.Action;
-import fr.override.game.shooter.api.other.actions.ActionCompleter;
-import fr.override.game.shooter.api.other.actions.SimpleAction;
-import fr.override.game.shooter.api.other.animations.Animable;
-import fr.override.game.shooter.api.other.animations.Animator;
+import fr.overrride.game.shooter.api.other.actions.Action;
+import fr.overrride.game.shooter.api.other.actions.ActionCompleter;
+import fr.overrride.game.shooter.api.other.actions.SimpleAction;
+import fr.overrride.game.shooter.api.other.animations.Animable;
+import fr.overrride.game.shooter.api.other.animations.Animator;
 
 public class ItemSpawnAnimation implements Animator {
 

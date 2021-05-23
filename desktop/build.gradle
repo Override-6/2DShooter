@@ -1,41 +1,18 @@
 apply plugin: "java"
+apply plugin: "scala"
 
-sourceCompatibility = 1.7
+sourceCompatibility = 8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = ["../core/assets"]
 
-project.ext.mainClassName = "fr.override.game.shooter.desktop.DesktopLauncher"
-project.ext.assetsDir = new File("../core/assets")
+eclipse.project.name = appName + "-core"
 
-task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
+dependencies {
+    implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.5'
 }
-
-task debug(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-    debug = true
-}
-
-task dist(type: Jar) {
-    manifest {
-        attributes 'Main-Class': project.mainClassName
-    }
-    dependsOn configurations.runtimeClasspath
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    with jar
-}
-
-
-dist.dependsOn classes
-
-eclipse.project.name = appName + "-desktop"

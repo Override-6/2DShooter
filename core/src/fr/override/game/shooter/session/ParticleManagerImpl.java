@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import fr.override.game.shooter.api.other.actions.RestAction;
-import fr.override.game.shooter.api.other.actions.RestActionCompleter;
-import fr.override.game.shooter.api.other.actions.SimpleRestAction;
-import fr.override.game.shooter.api.session.ParticleManager;
+import fr.overrride.game.shooter.api.other.actions.RestAction;
+import fr.overrride.game.shooter.api.other.actions.RestActionCompleter;
+import fr.overrride.game.shooter.api.other.actions.SimpleRestAction;
+import fr.overrride.game.shooter.api.session.ParticleManager;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package fr.override.game.shooter.session.character;
 
-import fr.override.game.shooter.api.session.character.Character;
-import fr.override.game.shooter.api.session.character.Controller;
-import fr.override.game.shooter.api.session.character.KeyControl;
+import fr.overrride.game.shooter.api.session.character.Character;
+import fr.overrride.game.shooter.api.session.character.Controller;
+import fr.overrride.game.shooter.api.session.character.KeyControl;
 
 import java.util.ArrayList;
 import java.util.Collection;

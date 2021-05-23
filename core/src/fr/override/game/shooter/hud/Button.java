@@ -2,7 +2,7 @@ package fr.override.game.shooter.hud;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.override.game.shooter.api.other.GraphicComponent;
+import fr.overrride.game.shooter.api.other.GraphicComponent;
 
 public class Button implements GraphicComponent, InteractiveElement {
 

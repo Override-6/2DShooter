@@ -1,7 +1,7 @@
 package fr.override.game.shooter.hud;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.override.game.shooter.api.other.GraphicComponent;
+import fr.overrride.game.shooter.api.other.GraphicComponent;
 
 /**
  * a Page is a HUDElement containers, his contents can't be queried or updated,

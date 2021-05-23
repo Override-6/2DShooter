@@ -2,10 +2,10 @@ package fr.override.game.shooter.session.items;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import fr.override.game.shooter.api.session.character.Shooter;
+import fr.overrride.game.shooter.api.session.character.Shooter;
 import fr.override.game.shooter.session.weapons.PistolMuzzle;
 import fr.override.game.shooter.session.weapons.ShotgunMuzzle;
-import fr.override.game.shooter.api.session.weapons.Weapon;
+import fr.overrride.game.shooter.api.session.weapons.Weapon;
 
 import java.util.function.Function;
 

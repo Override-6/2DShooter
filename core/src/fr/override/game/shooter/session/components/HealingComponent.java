@@ -2,9 +2,9 @@ package fr.override.game.shooter.session.components;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import fr.override.game.shooter.api.session.character.LivingEntity;
-import fr.override.game.shooter.api.session.comps.RectangleComponent;
-import fr.override.game.shooter.api.session.character.Collidable;
+import fr.overrride.game.shooter.api.session.character.LivingEntity;
+import fr.overrride.game.shooter.api.session.comps.RectangleComponent;
+import fr.overrride.game.shooter.api.session.character.Collidable;
 
 public class HealingComponent extends RectangleComponent {
 

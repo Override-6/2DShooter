@@ -1,12 +1,12 @@
 package fr.override.game.shooter.session;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.override.game.shooter.api.session.GameSession;
-import fr.override.game.shooter.api.session.ParticleManager;
-import fr.override.game.shooter.api.session.character.Character;
-import fr.override.game.shooter.api.session.character.Controllable;
-import fr.override.game.shooter.api.session.character.GameSessionObject;
-import fr.override.game.shooter.api.session.levels.Level;
+import fr.overrride.game.shooter.api.session.GameSession;
+import fr.overrride.game.shooter.api.session.ParticleManager;
+import fr.overrride.game.shooter.api.session.character.Character;
+import fr.overrride.game.shooter.api.session.character.Controllable;
+import fr.overrride.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.levels.Level;
 
 import java.util.HashSet;
 import java.util.Set;

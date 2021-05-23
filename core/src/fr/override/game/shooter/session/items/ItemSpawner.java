@@ -2,9 +2,8 @@ package fr.override.game.shooter.session.items;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import fr.override.game.shooter.api.session.GameSession;
-import fr.override.game.shooter.session.GameSessionImpl;
-import fr.override.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.GameSession;
+import fr.overrride.game.shooter.api.session.character.GameSessionObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

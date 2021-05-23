@@ -3,8 +3,8 @@ package fr.override.game.shooter.session.abilities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
-import fr.override.game.shooter.api.session.abilities.Ability;
-import fr.override.game.shooter.api.session.character.Character;
+import fr.overrride.game.shooter.api.session.abilities.Ability;
+import fr.overrride.game.shooter.api.session.character.Character;
 import org.jetbrains.annotations.Nullable;
 
 public class Dash implements Ability {

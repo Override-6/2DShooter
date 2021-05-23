@@ -1,11 +1,11 @@
 package fr.override.game.shooter.session.character;
 
 import com.badlogic.gdx.math.Vector2;
-import fr.override.game.shooter.api.other.actions.Action;
-import fr.override.game.shooter.api.other.actions.ActionCompleter;
-import fr.override.game.shooter.api.other.actions.SimpleAction;
-import fr.override.game.shooter.api.session.character.AxisController;
-import fr.override.game.shooter.api.session.character.Controllable;
+import fr.overrride.game.shooter.api.other.actions.Action;
+import fr.overrride.game.shooter.api.other.actions.ActionCompleter;
+import fr.overrride.game.shooter.api.other.actions.SimpleAction;
+import fr.overrride.game.shooter.api.session.character.AxisController;
+import fr.overrride.game.shooter.api.session.character.Controllable;
 
 import java.util.ArrayList;
 import java.util.List;
