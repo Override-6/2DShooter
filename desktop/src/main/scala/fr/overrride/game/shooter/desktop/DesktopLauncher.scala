@@ -1,12 +1,11 @@
 package fr.overrride.game.shooter.desktop
 
 import java.net.InetSocketAddress
-
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import fr.`override`.game.shooter.GameAdapter
-import fr.`override`.game.shooter.session.GameSessionImpl
 import fr.linkit.client.ClientApplication
 import fr.linkit.client.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
+import fr.overrride.game.shooter.GameAdapter
+import fr.overrride.game.shooter.session.GameSessionImpl
 
 object DesktopLauncher {
     val WINDOW_WIDTH                     = 1920
