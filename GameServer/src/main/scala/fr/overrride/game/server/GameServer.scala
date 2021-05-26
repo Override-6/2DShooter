@@ -11,7 +11,9 @@ object GameServer {
 
     def main(args: Array[String]): Unit = {
         val serverConfiguration = new ServerApplicationConfigBuilder {
-            override val resourceFolder: String = System.getProperty("LinkitHome")
+            override val resourceFolder: String = System.getenv("LinkitHome")
+
+            pluginsFolder = None
             loadSchematic = new ScalaServerAppSchematic {
                 servers += new ServerConnectionConfigBuilder {
                     override val identifier: String = "GameServer"
@@ -19,7 +21,7 @@ object GameServer {
                 }
             }
         }
-        val serverApp           = ServerApplication.launch(serverConfiguration)
+        ServerApplication.launch(serverConfiguration)
         AppLogger.info(s"Server Application launched on port $PORT.")
     }
 

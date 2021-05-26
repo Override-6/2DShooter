@@ -3,11 +3,13 @@ package fr.overrride.game.shooter.session;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.other.states.GameState;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Character;
 import fr.overrride.game.shooter.api.session.character.KeyControl;
 import fr.overrride.game.shooter.api.session.character.KeyType;
+import fr.overrride.game.shooter.session.character.CharacterController;
 import fr.overrride.game.shooter.session.character.ShooterCharacter;
 import fr.overrride.game.shooter.session.levels.FirstLevel;
 

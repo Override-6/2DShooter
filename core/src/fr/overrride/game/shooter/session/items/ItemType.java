@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import fr.overrride.game.shooter.api.session.character.Shooter;
 import fr.overrride.game.shooter.api.session.weapons.Weapon;
+import fr.overrride.game.shooter.session.weapons.PistolMuzzle;
+import fr.overrride.game.shooter.session.weapons.ShotgunMuzzle;
 
 import java.util.function.Function;
 

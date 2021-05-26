@@ -1,33 +1,44 @@
 package fr.overrride.game.shooter.desktop
 
-import java.net.InetSocketAddress
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
+import fr.linkit.api.local.system.AppLogger
 import fr.linkit.client.ClientApplication
+import fr.linkit.client.config.schematic.ScalaClientAppSchematic
 import fr.linkit.client.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
 import fr.overrride.game.shooter.GameAdapter
+import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
+import java.net.InetSocketAddress
+
 object DesktopLauncher {
-    val WINDOW_WIDTH                     = 1920
-    val WINDOW_HEIGHT                    = 1080
-    val GAME_TITLE                       = "2DShooter"
+
+    val WindowWidth  = 1920
+    val WindowHeight = 1080
+    val GameTitle    = "2DShooter"
     val ServerAddress: InetSocketAddress = new InetSocketAddress("localhost", 48485)
+    val ServerIdentifier: String = "GameServer"
 
     def main(arg: Array[String]): Unit = {
         val config = new LwjglApplicationConfiguration
-        config.width = WINDOW_WIDTH
-        config.height = WINDOW_HEIGHT
-        config.title = GAME_TITLE
+        config.width = WindowWidth
+        config.height = WindowHeight
+        config.title = GameTitle
 
-        val clientConfig         = new ClientApplicationConfigBuilder {
-            override val resourcesFolder: String = System.getProperty("user.home") + "/Linkit/Home/"
+        val clientConfig = new ClientApplicationConfigBuilder {
+            override val resourcesFolder: String = System.getenv("LinkitHome")
+            pluginFolder = None
+            loadSchematic = new ScalaClientAppSchematic {
+                clients += new ClientConnectionConfigBuilder {
+                    override val identifier   : String            = ServerIdentifier
+                    override val remoteAddress: InetSocketAddress = ServerAddress
+                }
+            }
         }
-        val client               = ClientApplication.launch(clientConfig, getClass, classOf[GameSessionImpl])
-        val gameServerConnection = new ClientConnectionConfigBuilder {
-            override val identifier   : String            = "GameServer"
-            override val remoteAddress: InetSocketAddress = ServerAddress
-        }
-        val serverConnection     = client.openConnection(gameServerConnection)
-        new LwjglApplication(new GameAdapter(serverConnection), config)
+        val client       = ClientApplication.launch(clientConfig, getClass, classOf[GameSessionImpl], classOf[GameSession])
+        val connection = client.getConnection(ServerIdentifier).get
+        AppLogger.info("Linkit client Application started, Starting LwjglApplication...")
+        new LwjglApplication(new GameAdapter(connection), config)
+        AppLogger.info("LwjglApplication started !")
     }
 }
