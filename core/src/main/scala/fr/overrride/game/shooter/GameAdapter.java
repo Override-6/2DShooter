@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.linkit.api.connection.ExternalConnection;
 import fr.overrride.game.shooter.api.other.states.GameStateManager;
-import fr.overrride.game.shooter.session.PlayState;
+import fr.overrride.game.shooter.hud.LobbyState;
 
 public class GameAdapter extends ApplicationAdapter {
     private final GameStateManager manager = new GameStateManager();
@@ -18,7 +18,7 @@ public class GameAdapter extends ApplicationAdapter {
 
     @Override
     public void create() {
-        manager.push(PlayState.class);
+        manager.push(new LobbyState(serverConnection));
         batch = new SpriteBatch();
     }
 

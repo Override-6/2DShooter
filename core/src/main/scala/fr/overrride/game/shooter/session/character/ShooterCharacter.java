@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import fr.linkit.api.connection.cache.repo.annotations.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
 import fr.overrride.game.shooter.api.session.character.AxisController;
@@ -18,6 +19,9 @@ import fr.overrride.game.shooter.api.session.weapons.Weapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+
+import static fr.linkit.api.connection.cache.repo.annotations.InvocationKind.ONLY_LOCAL;
+
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
 
@@ -53,6 +57,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void update(float deltaTime) {
         lastPosition.set(position);
         lastVelocity.set(velocity);
@@ -69,6 +74,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void render(SpriteBatch batch) {
         super.render(batch);
         healthBar.render(batch);
@@ -76,6 +82,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void dispose() {
         super.dispose();
         weapon.dispose();
@@ -112,6 +119,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public Controller<Character> getController() {
         return controller;
     }
@@ -122,6 +130,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public Weapon getWeapon() {
         return weapon;
     }
@@ -135,20 +144,23 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     @Override
     public boolean canShoot() {
-        return getWeapon().canShoot();
+        return weapon.canShoot();
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public Vector2 getVelocity() {
         return velocity;
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public Vector2 getLocation() {
         return position;
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void onCollision(Collidable collidable) {
         if (collidable instanceof Bullet) {
             handleBulletCollision((Bullet) collidable);
@@ -167,21 +179,25 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public boolean canCollide() {
         return true;
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void setCollidable(boolean canCollide) {
 
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public Optional<GameSession> getCurrentGameSession() {
         return Optional.ofNullable(session);
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void setGameSession(@Nullable GameSession gameSession) {
         this.session = gameSession;
         if (weapon != null)
@@ -190,11 +206,13 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public float getHealth() {
         return healthBar.getProgress();
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public float getMaxHealth() {
         return MAX_HEALTH;
     }

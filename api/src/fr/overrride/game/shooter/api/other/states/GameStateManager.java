@@ -8,37 +8,21 @@ import java.util.Stack;
 
 public class GameStateManager {
 
-    private final Stack<GameState> gameStates = new Stack<>();
+    private final Stack<ScreenState> screenStates = new Stack<>();
 
-    public void push(GameState state) {
-        gameStates.push(state);
-    }
-
-    public <T extends GameState> void push(Class<T> clazz) {
-        try {
-            Constructor<T> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            T state = constructor.newInstance();
-            push(state);
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void set(GameState gameState) {
-        gameStates.pop().dispose();
-        push(gameState);
+    public void push(ScreenState state) {
+        screenStates.push(state);
     }
 
     public void update(float dt) {
-        gameStates.peek().update(dt);
+        screenStates.peek().update(dt);
     }
 
     public void render(SpriteBatch batch) {
-        gameStates.peek().render(batch);
+        screenStates.peek().render(batch);
     }
 
     public void resize(int width, int height) {
-        gameStates.peek().resize(width, height);
+        screenStates.peek().resize(width, height);
     }
 }

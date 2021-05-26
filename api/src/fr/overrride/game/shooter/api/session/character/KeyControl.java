@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 
 import java.util.function.Consumer;
 
-public final class KeyControl<T extends Controllable> {
+public final class KeyControl<T extends Controllable<?>> {
 
-    private final KeyType identifier;
+    private final KeyType type;
     private final int keyCode;
     private final Consumer<T> onPressed;
 
     private KeyControl(KeyType identifier, int keyCode, Consumer<T> onPressed) {
-        this.identifier = identifier;
+        this.type = identifier;
         this.keyCode = keyCode;
         this.onPressed = onPressed;
     }
@@ -22,16 +22,16 @@ public final class KeyControl<T extends Controllable> {
     }
 
     private boolean isPressed() {
-        return identifier.canBeHold()
+        return type.canBeHold()
                 ? Gdx.input.isKeyPressed(keyCode)
                 : Gdx.input.isKeyJustPressed(keyCode);
     }
 
-    public KeyType getIdentifier() {
-        return identifier;
+    public KeyType getType() {
+        return type;
     }
 
-    public static <T extends Controllable> KeyControl<T> of(KeyType identifier, int keyCode, Consumer<T> onPressed) {
+    public static <T extends Controllable<?>> KeyControl<T> of(KeyType identifier, int keyCode, Consumer<T> onPressed) {
         return new KeyControl<T>(identifier, keyCode, onPressed);
     }
 

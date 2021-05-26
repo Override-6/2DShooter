@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import fr.linkit.api.connection.cache.repo.annotations.InvocationKind;
+import fr.linkit.api.connection.cache.repo.annotations.MethodControl;
 import fr.overrride.game.shooter.api.other.animations.Animable;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.GameSessionObject;
@@ -13,26 +15,38 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+import static fr.linkit.api.connection.cache.repo.annotations.InvocationKind.ONLY_LOCAL;
+import static fr.linkit.api.connection.cache.repo.annotations.InvocationKind.ONLY_OWNER;
+
 public class Weapon implements GameSessionObject, Animable {
 
     private final Texture texture;
-    private Shooter shooter;
+    private Shooter owner;
     private final Muzzle muzzle;
     private float rotation = 0;
 
-    private final double speed;
+    private final float fireRate;
     private GameSession session;
 
     private double lastShoot = 0;
 
-    public Weapon(Shooter owner, Texture texture, float speed, Muzzle muzzle) {
-        this.shooter = owner;
+    public Weapon(Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
+        this.owner = owner;
         this.texture = texture;
-        this.speed = speed;
+        this.fireRate = fireRate;
         this.muzzle = muzzle;
     }
 
+    public Weapon(Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
+        this(owner, new Texture(Gdx.files.internal(texturePath)), fireRate, muzzle);
+    }
+
+    public Weapon(Weapon other) {
+        this(other.owner, other.texture, other.fireRate, other.muzzle);
+    }
+
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void update(float dt) {
         int mouseX = Gdx.input.getX();
         int mouseY = Gdx.input.getY();
@@ -42,6 +56,7 @@ public class Weapon implements GameSessionObject, Animable {
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void render(SpriteBatch batch) {
         Vector2 pos = getCenter();
 
@@ -53,6 +68,7 @@ public class Weapon implements GameSessionObject, Animable {
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void dispose() {
         if (session != null)
             session.removeObject(this);
@@ -60,26 +76,31 @@ public class Weapon implements GameSessionObject, Animable {
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public Optional<GameSession> getCurrentGameSession() {
         return Optional.ofNullable(session);
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void setGameSession(@Nullable GameSession gameSession) {
         this.session = gameSession;
     }
 
     @Override
+    @MethodControl(ONLY_OWNER)
     public float getRotation() {
         return rotation;
     }
 
     @Override
+    @MethodControl(ONLY_OWNER)
     public Vector2 getLocation() {
         return getCenter();
     }
 
     @Override
+    @MethodControl(ONLY_OWNER)
     public DrawPriority getDrawPriority() {
         return DrawPriority.FOREGROUND;
     }
@@ -90,11 +111,13 @@ public class Weapon implements GameSessionObject, Animable {
     }
 
     @Override
+    @MethodControl(ONLY_OWNER)
     public void setRotation(float angle) {
         rotation = angle;
     }
 
     @Override
+    @MethodControl(ONLY_OWNER)
     public Vector2 getSize() {
         return new Vector2(texture.getWidth(), texture.getHeight());
     }
@@ -105,9 +128,10 @@ public class Weapon implements GameSessionObject, Animable {
     }
 
     public boolean canShoot() {
-        return System.currentTimeMillis() - lastShoot >= speed;
+        return System.currentTimeMillis() - lastShoot >= fireRate;
     }
 
+    @MethodControl(ONLY_LOCAL)
     public void shoot() {
         Vector2 direction = new Vector2(0, 1);
         direction.rotate(rotation - 90);
@@ -116,16 +140,17 @@ public class Weapon implements GameSessionObject, Animable {
         lastShoot = System.currentTimeMillis();
     }
 
+    @MethodControl(ONLY_OWNER)
     public Shooter getOwner() {
-        return shooter;
+        return owner;
     }
 
     public void setOwner(Shooter owner) {
-        this.shooter = owner;
+        this.owner = owner;
     }
 
     private Vector2 getCenter() {
-        Vector2 pos = new Vector2(shooter.getLocation());
+        Vector2 pos = new Vector2(owner.getLocation());
         pos.add(75 / 2F, 30);
         return pos;
     }

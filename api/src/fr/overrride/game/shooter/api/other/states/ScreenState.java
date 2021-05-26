@@ -3,15 +3,15 @@ package fr.overrride.game.shooter.api.other.states;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public abstract class GameState {
+public abstract class ScreenState {
 
     protected OrthographicCamera camera;
 
-    protected GameState() {
+    protected ScreenState() {
         camera = new OrthographicCamera();
     }
 
-    protected abstract void handleInput();
+    protected abstract void handleInputs();
 
     public abstract void update(float deltaTime);
 

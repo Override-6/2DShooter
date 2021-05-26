@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import fr.overrride.game.shooter.GameConstants;
-import fr.overrride.game.shooter.api.other.states.GameState;
+import fr.overrride.game.shooter.api.other.states.ScreenState;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Character;
 import fr.overrride.game.shooter.api.session.character.KeyControl;
@@ -15,7 +15,7 @@ import fr.overrride.game.shooter.session.levels.FirstLevel;
 
 import static com.badlogic.gdx.Input.Keys.*;
 
-public class PlayState extends GameState {
+public class PlayState extends ScreenState {
 
     private final GameSession session;
     private final Texture background;
@@ -59,13 +59,13 @@ public class PlayState extends GameState {
     }
 
     @Override
-    protected void handleInput() {
+    protected void handleInputs() {
         session.updateInputs();
     }
 
     @Override
     public void update(float deltaTime) {
-        handleInput();
+        handleInputs();
         session.updateScene(deltaTime);
     }
 
