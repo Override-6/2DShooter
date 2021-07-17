@@ -4,19 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.repo.annotations.InvocationKind;
-import fr.linkit.api.connection.cache.repo.annotations.MethodControl;
+import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
 import fr.overrride.game.shooter.api.other.animations.Animable;
+import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.GameSessionObject;
-import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.character.Shooter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.connection.cache.repo.annotations.InvocationKind.ONLY_LOCAL;
-import static fr.linkit.api.connection.cache.repo.annotations.InvocationKind.ONLY_OWNER;
+import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_LOCAL;
+import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_OWNER;
+
 
 public class Weapon implements GameSessionObject, Animable {
 

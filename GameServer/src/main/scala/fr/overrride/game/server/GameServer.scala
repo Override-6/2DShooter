@@ -2,8 +2,8 @@ package fr.overrride.game.server
 
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.server.ServerApplication
-import fr.linkit.server.config.schematic.ScalaServerAppSchematic
-import fr.linkit.server.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
+import fr.linkit.server.local.config.schematic.ScalaServerAppSchematic
+import fr.linkit.server.local.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
 
 object GameServer {
 
@@ -13,7 +13,7 @@ object GameServer {
         val serverConfiguration = new ServerApplicationConfigBuilder {
             override val resourceFolder: String = System.getenv("LinkitHome")
 
-            pluginsFolder = None
+            pluginFolder = None
             loadSchematic = new ScalaServerAppSchematic {
                 servers += new ServerConnectionConfigBuilder {
                     override val identifier: String = "GameServer"
