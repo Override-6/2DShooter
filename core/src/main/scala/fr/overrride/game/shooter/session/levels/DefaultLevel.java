@@ -11,7 +11,7 @@ import fr.overrride.game.shooter.api.session.character.GameSessionObject;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FirstLevel extends Level {
+public class DefaultLevel extends Level {
 
     @Override
     protected Set<GameSessionObject> buildLevel() {
