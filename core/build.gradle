@@ -8,6 +8,10 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-core"
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\API\\build\\libs')
     implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\Engine\\build\\libs')

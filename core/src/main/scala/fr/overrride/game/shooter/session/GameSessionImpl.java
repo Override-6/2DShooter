@@ -1,6 +1,8 @@
 package fr.overrride.game.shooter.session;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind;
+import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.ParticleManager;
 import fr.overrride.game.shooter.api.session.character.Character;
@@ -13,7 +15,7 @@ import java.util.Set;
 
 public class GameSessionImpl implements GameSession {
 
-    private final Set<Controllable> players = new HashSet<>();
+    private final Set<Controllable<?>> players = new HashSet<>();
 
     private final SceneManager sceneManager = new SceneManager();
     private final ParticleManager particleManager = new ParticleManagerImpl();
@@ -50,6 +52,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void updateInputs() {
         players.forEach(character -> character.getController().update());
     }
@@ -60,6 +63,12 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
+    public ParticleManager getParticleManager() {
+        return particleManager;
+    }
+
+    @Override
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);
@@ -67,23 +76,22 @@ public class GameSessionImpl implements GameSession {
         sceneManager.removeObject(object);
     }
 
-    public ParticleManager getParticleManager() {
-        return particleManager;
-    }
-
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void updateScene(float deltaTime) {
         sceneManager.update(deltaTime);
         particleManager.update(deltaTime);
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void renderScene(SpriteBatch batch) {
         sceneManager.render(batch);
         particleManager.render(batch);
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void disposeScene() {
         sceneManager.dispose();
     }

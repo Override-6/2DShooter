@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
-import fr.linkit.api.local.concurrency.WorkerPools
 import fr.linkit.engine.connection.cache.repo.DefaultEngineObjectCenter
+import fr.linkit.engine.connection.cache.repo.description.TreeViewDefaultBehavior
+import fr.linkit.engine.connection.cache.repo.description.annotation.AnnotationBasedMemberBehaviorFactory
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
@@ -16,16 +17,21 @@ import fr.overrride.game.shooter.session.levels.DefaultLevel
 
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
+    val tree = new TreeViewDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
     private val session: GameSession = {
+        //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
         val center = connection.runLaterControl {
             connection
                     .network
                     .serverEngine
                     .cache
-                    .getCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
+                    .retrieveCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         }.join().get
-        center.findObject(0)
-                .getOrElse(center.postObject(0, new GameSessionImpl(3, new DefaultLevel)))
+        val obj    = new GameSessionImpl(3, new DefaultLevel)
+        connection.runLaterControl {
+            center.findObject(0)
+                    .getOrElse(center.postObject(0, obj))
+        }.join().get
     }
     private val background           = new Texture("background.png")
     createPlayers()

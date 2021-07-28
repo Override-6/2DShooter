@@ -26,7 +26,7 @@ import static fr.linkit.api.connection.cache.repo.description.annotation.Invocat
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
 
     private Weapon weapon;
-    private Controller<Character> controller = null;
+    private transient Controller<Character> controller = null;
     private GameSession session = null;
     private final AxisController axisController;
     private final ProgressBar healthBar;
