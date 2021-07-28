@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
-import fr.linkit.engine.connection.cache.repo.DefaultEngineObjectCenter
-import fr.linkit.engine.connection.cache.repo.description.TreeViewDefaultBehavior
-import fr.linkit.engine.connection.cache.repo.description.annotation.AnnotationBasedMemberBehaviorFactory
+import fr.linkit.engine.connection.cache.obj.DefaultEngineObjectCenter
+import fr.linkit.engine.connection.cache.obj.description.TreeViewDefaultBehavior
+import fr.linkit.engine.connection.cache.obj.description.annotation.AnnotationBasedMemberBehaviorFactory
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
@@ -28,10 +28,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
                     .retrieveCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         }.join().get
         val obj    = new GameSessionImpl(3, new DefaultLevel)
-        connection.runLaterControl {
-            center.findObject(0)
-                    .getOrElse(center.postObject(0, obj))
-        }.join().get
+        center.findObject(0)
+                .getOrElse(center.postObject(0, obj))
     }
     private val background           = new Texture("background.png")
     createPlayers()
@@ -47,17 +45,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         controller.addKeyControl(KeyControl.of(KeyType.SHOOT, E, _.shoot()))
         player1.setController(controller)
         player1.setGameSession(session)
-        val player2     = new ShooterCharacter(1500, 550, Color.PURPLE)
-        val controller2 = new CharacterController(player2)
-        controller2.addKeyControl(KeyControl.of(KeyType.DASH, P, _.dash()))
-        controller2.addKeyControl(KeyControl.of(KeyType.JUMP, UP, _.jump()))
-        controller2.addKeyControl(KeyControl.of(KeyType.LEFT, LEFT, _.left()))
-        controller2.addKeyControl(KeyControl.of(KeyType.RIGHT, RIGHT, _.right()))
-        controller2.addKeyControl(KeyControl.of(KeyType.SHOOT, R, _.shoot()))
-        player2.setController(controller2)
-        player2.setGameSession(session)
         session.addCharacter(player1)
-        session.addCharacter(player2)
     }
 
     override protected def handleInputs(): Unit = {

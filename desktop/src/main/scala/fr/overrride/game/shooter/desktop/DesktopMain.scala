@@ -1,6 +1,7 @@
 package fr.overrride.game.shooter.desktop
 
-import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
+import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration, LwjglFileHandle}
+import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.client.ClientApplication
 import fr.linkit.client.local.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
@@ -11,15 +12,15 @@ import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
 import java.net.InetSocketAddress
+import scala.io.StdIn
 
 object DesktopMain {
 
-    val WindowWidth  = 1920
-    val WindowHeight = 1080
-    val GameTitle    = "2DShooter"
+    val WindowWidth : Int = 1920 / 2
+    val WindowHeight: Int = 1080 / 2
+    val GameTitle         = "2DShooter"
     val Port = 48485
     val ServerAddress   : InetSocketAddress = new InetSocketAddress("localhost", Port)
-    val ClientIdentifier: String            = "Client"
 
     def main(arg: Array[String]): Unit = {
         val config = new LwjglApplicationConfiguration
@@ -27,19 +28,28 @@ object DesktopMain {
         config.height = WindowHeight
         config.title = GameTitle
 
+        println("Choose client identifier.")
+        print(" > ")
+        val clientIdentifier = StdIn.readLine()
+
         val clientConfig = new ClientApplicationConfigBuilder {
             override val resourcesFolder: String = System.getenv("LinkitHome")
             nWorkerThreadFunction = _ + 1
             pluginFolder = None
             loadSchematic = new ScalaClientAppSchematic {
                 clients += new ClientConnectionConfigBuilder {
-                    override val identifier   : String            = ClientIdentifier
+                    override val identifier   : String            = clientIdentifier
                     override val remoteAddress: InetSocketAddress = ServerAddress
                 }
             }
         }
         NumberSerializer.serializeInt(4)
-        val client       = ClientApplication.launch(clientConfig, getClass, classOf[GameSessionImpl], classOf[GameSession])
+        val client       = ClientApplication.launch(clientConfig, getClass,
+            classOf[GameSession],
+            classOf[GameSessionImpl],
+            classOf[Texture],
+            classOf[LwjglFileHandle],
+            classOf[Color])
         val connection = client.getConnection(Port).get
         AppLogger.info("Linkit client Application started, Starting LwjglApplication...")
         new LwjglApplication(new GameAdapter(connection), config)

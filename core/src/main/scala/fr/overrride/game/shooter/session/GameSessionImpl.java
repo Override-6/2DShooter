@@ -54,7 +54,9 @@ public class GameSessionImpl implements GameSession {
     @Override
     @MethodControl(InvocationKind.ONLY_LOCAL)
     public void updateInputs() {
-        players.forEach(character -> character.getController().update());
+        players.forEach(character -> {
+            character.getController().update();
+        });
     }
 
     @Override
