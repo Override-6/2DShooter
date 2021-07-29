@@ -5,21 +5,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
+import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
 import fr.overrride.game.shooter.api.session.character.AxisController;
 import fr.overrride.game.shooter.api.session.character.Character;
+import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.character.Controller;
 import fr.overrride.game.shooter.api.session.comps.RectangleComponent;
-import fr.overrride.game.shooter.api.session.character.Collidable;
+import fr.overrride.game.shooter.api.session.weapon.Bullet;
+import fr.overrride.game.shooter.api.session.weapon.Weapon;
+import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import fr.overrride.game.shooter.session.abilities.Dash;
 import fr.overrride.game.shooter.session.components.ProgressBar;
-import fr.overrride.game.shooter.api.session.weapons.Bullet;
-import fr.overrride.game.shooter.api.session.weapons.Weapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.LOCAL_AND_REMOTES;
 import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_LOCAL;
 
 
@@ -43,11 +46,12 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     public static final int SPEED = 200;
     public static final int JUMP_HEIGHT = 1750;
     public static final int MAX_HEALTH = 100;
+    public static final int PLAYER_DIM = 60;
 
     public ShooterCharacter(float x, float y, Color color) {
-        super(x, y, 60, 60, color);
+        super(x, y, PLAYER_DIM, PLAYER_DIM, color);
 
-        weapon = Weapon.empty(this);
+        weapon = SimpleWeapon.empty(this);
         velocity = new Vector2();
         lastPosition = new Vector2(position);
         lastVelocity = new Vector2();
@@ -74,6 +78,12 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    public void dash() {
+        dash.use();
+    }
+
+    @Override
     @MethodControl(ONLY_LOCAL)
     public void render(SpriteBatch batch) {
         super.render(batch);
@@ -90,16 +100,19 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void right() {
         velocity.x += SPEED;
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void left() {
         velocity.x -= SPEED;
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void jump() {
 
         if (isOnGround)
@@ -114,6 +127,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void shoot() {
         weapon.shoot();
     }
@@ -125,6 +139,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public void setController(Controller<Character> controller) {
         this.controller = controller;
     }
@@ -143,6 +158,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(ONLY_LOCAL)
     public boolean canShoot() {
         return weapon.canShoot();
     }
@@ -218,6 +234,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void damage(float f) {
         healthBar.setProgress(healthBar.getProgress() - f);
         if (getHealth() <= 0)
@@ -225,12 +242,14 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void heal(float f) {
         if (getHealth() <= MAX_HEALTH)
             healthBar.setProgress(healthBar.getProgress() + f);
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void setHealth(float f) {
         healthBar.setProgress(f);
         if (getHealth() <= 0)
@@ -239,6 +258,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void kill() {
         getCurrentGameSession().ifPresent(session -> {
             session.getParticleManager()
@@ -321,6 +341,23 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
         velocity.scl(deltaTime);
         position.add(velocity);
         velocity.scl(1 / deltaTime);
+
+        if (velocity.x > GameConstants.VIEWPORT_WIDTH - PLAYER_DIM) {
+            velocity.setZero();
+            position.x = GameConstants.VIEWPORT_WIDTH - PLAYER_DIM;
+        }
+        if (position.x < 0) {
+            velocity.setZero();
+            position.x = 0;
+        }
+        if (position.y > GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM) {
+            velocity.setZero();
+            position.y = GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM;
+        }
+        if (position.y < 0) {
+            velocity.setZero();
+            position.y = 75;
+        }
     }
 
     private void handleFriction() {
@@ -348,8 +385,4 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
                 .playEffect("particles/walk.party", x, position.y, getColor());
     }
 
-    @Override
-    public void dash() {
-        dash.use();
-    }
 }

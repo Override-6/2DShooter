@@ -1,24 +1,25 @@
-package fr.overrride.game.shooter.api.session.weapons;
+package fr.overrride.game.shooter.session.weapons;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
-import fr.overrride.game.shooter.api.other.animations.Animable;
 import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.GameSession;
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
 import fr.overrride.game.shooter.api.session.character.Shooter;
+import fr.overrride.game.shooter.api.session.weapon.Muzzle;
+import fr.overrride.game.shooter.api.session.weapon.Weapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_LOCAL;
 import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_OWNER;
+import static fr.overrride.game.shooter.GameConstants.SIZE_DIVIDE;
 
 
-public class Weapon implements GameSessionObject, Animable {
+public class SimpleWeapon implements Weapon {
 
     private final Texture texture;
     private Shooter owner;
@@ -30,26 +31,26 @@ public class Weapon implements GameSessionObject, Animable {
 
     private double lastShoot = 0;
 
-    public Weapon(Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
+    public SimpleWeapon(Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
         this.owner = owner;
         this.texture = texture;
         this.fireRate = fireRate;
         this.muzzle = muzzle;
     }
 
-    public Weapon(Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
+    public SimpleWeapon(Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
         this(owner, new Texture(Gdx.files.internal(texturePath)), fireRate, muzzle);
     }
 
-    public Weapon(Weapon other) {
+    public SimpleWeapon(SimpleWeapon other) {
         this(other.owner, other.texture, other.fireRate, other.muzzle);
     }
 
     @Override
     @MethodControl(ONLY_LOCAL)
     public void update(float dt) {
-        int mouseX = Gdx.input.getX();
-        int mouseY = Gdx.input.getY();
+        int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
+        int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
 
         rotation = MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13); //TODO GameConstants
         muzzle.update(dt);
@@ -113,7 +114,7 @@ public class Weapon implements GameSessionObject, Animable {
     @Override
     @MethodControl(ONLY_OWNER)
     public void setRotation(float angle) {
-        rotation = angle;
+        rotation = angle % 360;
     }
 
     @Override
@@ -155,8 +156,8 @@ public class Weapon implements GameSessionObject, Animable {
         return pos;
     }
 
-    public static Weapon empty(Shooter shooter) {
-        return new Weapon(shooter, new Texture("empty.png"), 0, new Muzzle() {
+    public static SimpleWeapon empty(Shooter shooter) {
+        return new SimpleWeapon(shooter, (Texture) new Texture("empty.png"), 0, new Muzzle() {
             @Override
             public void fire(Vector2 direction, Weapon weapon) {
 

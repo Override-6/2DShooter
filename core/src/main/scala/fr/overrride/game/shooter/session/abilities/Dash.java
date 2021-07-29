@@ -1,8 +1,8 @@
 package fr.overrride.game.shooter.session.abilities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
+import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
 import fr.overrride.game.shooter.api.session.character.Character;
 import org.jetbrains.annotations.Nullable;
@@ -25,9 +25,9 @@ public class Dash implements Ability {
 
     @Override
     public void use() {
-        boolean mouseRight = Gdx.input.getX() >= character.getWeapon().getLocation().x;
+        boolean mouseRight = character.getWeapon().getRotation() < 90;
 
-        character.getVelocity().x += mouseRight ? POWER : -POWER;
+        character.getVelocity().x += (mouseRight ? POWER : -POWER) / GameConstants.SIZE_DIVIDE;
         lastUse = System.currentTimeMillis();
         isUsing = true;
 

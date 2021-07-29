@@ -12,10 +12,11 @@ import fr.linkit.server.local.config.{ServerApplicationConfigBuilder, ServerConn
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
+import scala.io.StdIn
+
 object GameServer {
 
     val Port: Int = 48485
-
 
     def main(args: Array[String]): Unit = {
         NumberSerializer.serializeInt(152)
@@ -30,20 +31,25 @@ object GameServer {
                 }
             }
         }
-        val serverApp = ServerApplication.launch(serverConfiguration,
+        val serverApp           = ServerApplication.launch(serverConfiguration,
             classOf[GameSession],
             classOf[GameSessionImpl],
             classOf[Texture],
             classOf[LwjglFileHandle],
             classOf[Color])
-        val connection = serverApp.getConnection(Port).get
-        val cache = connection
+        val connection          = serverApp.getConnection(Port).get
+        val cache               = connection
                 .network
                 .serverEngine
                 .cache
                 .retrieveCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
-        cache
+
+        while (true) {
+            val line = StdIn.readLine()
+            if (line == "stop")
+                return
+        }
     }
 
 }

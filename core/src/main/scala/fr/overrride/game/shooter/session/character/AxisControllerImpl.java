@@ -36,7 +36,7 @@ public class AxisControllerImpl implements AxisController {
             pos.x = xAxis;
             velocity.x = 0;
             xMills -= deltaTime * 60 * 60;
-        } else {
+        } else if (xActions != null) {
             xActions.forEach(ActionCompleter::onActionCompleted);
             xActions.clear();
         }
@@ -45,7 +45,7 @@ public class AxisControllerImpl implements AxisController {
             pos.y = yAxis;
             velocity.y = 0;
             yMillis -= deltaTime * 60 * 60;
-        } else {
+        } else if (yActions != null){
             yActions.forEach(ActionCompleter::onActionCompleted);
             yActions.clear();
         }

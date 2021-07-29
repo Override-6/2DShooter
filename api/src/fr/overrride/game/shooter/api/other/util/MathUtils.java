@@ -19,7 +19,7 @@ public final class MathUtils {
             inRad = -inRad;
         else inRad = 2 * Math.PI - inRad;
 
-        return (float) Math.toDegrees(inRad);
+        return (float) Math.toDegrees(inRad) % 360;
     }
 
 }

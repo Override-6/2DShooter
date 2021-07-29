@@ -9,6 +9,8 @@ public interface GameSession {
 
     int getMaxPlayers();
 
+    int countPlayers();
+
     void addCharacter(Character character);
 
     void setCurrentLevel(Level level);

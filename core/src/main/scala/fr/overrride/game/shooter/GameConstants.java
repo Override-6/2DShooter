@@ -11,8 +11,10 @@ public final class GameConstants {
     public static final float VIEWPORT_WIDTH = 1920;
     public static final float VIEWPORT_HEIGHT = 1080;
 
-    public static final float WINDOW_WIDTH = 1920;
-    public static final float WINDOW_HEIGHT = 1080;
+    public static final int SIZE_DIVIDE = 2;
+
+    public static final float WINDOW_WIDTH = VIEWPORT_WIDTH / SIZE_DIVIDE;
+    public static final float WINDOW_HEIGHT = VIEWPORT_HEIGHT / SIZE_DIVIDE;
 
 
 

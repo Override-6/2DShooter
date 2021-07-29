@@ -7,6 +7,7 @@ import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.ParticleManager;
 import fr.overrride.game.shooter.api.session.character.Character;
 import fr.overrride.game.shooter.api.session.character.Controllable;
+import fr.overrride.game.shooter.api.session.character.Controller;
 import fr.overrride.game.shooter.api.session.character.GameSessionObject;
 import fr.overrride.game.shooter.api.session.levels.Level;
 
@@ -28,8 +29,15 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public int getMaxPlayers() {
         return maxPlayers;
+    }
+
+    @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
+    public int countPlayers() {
+        return players.size();
     }
 
     @Override
@@ -55,7 +63,9 @@ public class GameSessionImpl implements GameSession {
     @MethodControl(InvocationKind.ONLY_LOCAL)
     public void updateInputs() {
         players.forEach(character -> {
-            character.getController().update();
+            Controller<?> ctrl = character.getController();
+            if (ctrl != null)
+                ctrl.update();
         });
     }
 

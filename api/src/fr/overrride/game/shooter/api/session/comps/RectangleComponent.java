@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind;
+import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.character.Colorable;
@@ -85,6 +87,7 @@ public class RectangleComponent implements Collidable, Colorable {
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public Rectangle getHitBox() {
         return new Rectangle(position.x, position.y, width, height);
     }

@@ -1,6 +1,6 @@
 package fr.overrride.game.shooter.api.session.character;
 
-import fr.overrride.game.shooter.api.session.weapons.Weapon;
+import fr.overrride.game.shooter.api.session.weapon.Weapon;
 
 public interface Shooter extends GameSessionObject, Deplacable {
 

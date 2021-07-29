@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
+import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind
 import fr.linkit.engine.connection.cache.obj.DefaultEngineObjectCenter
-import fr.linkit.engine.connection.cache.obj.description.TreeViewDefaultBehavior
+import fr.linkit.engine.connection.cache.obj.description.WrapperBehaviorBuilder.MethodControl
+import fr.linkit.engine.connection.cache.obj.description.{TreeViewDefaultBehavior, WrapperBehaviorBuilder}
 import fr.linkit.engine.connection.cache.obj.description.annotation.AnnotationBasedMemberBehaviorFactory
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
@@ -18,25 +20,29 @@ import fr.overrride.game.shooter.session.levels.DefaultLevel
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     val tree = new TreeViewDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
-    private val session: GameSession = {
+    new WrapperBehaviorBuilder[GameSessionImpl](tree) {
+        annotateAll("addCharacter") by MethodControl(InvocationKind.LOCAL_AND_REMOTES, synchronizedParams = Seq(true))
+        annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
+    }.build
+    private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
         val center = connection.runLaterControl {
             connection
                     .network
                     .serverEngine
                     .cache
-                    .retrieveCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
+                    .retrieveCache(0, DefaultEngineObjectCenter[GameSession](tree), CacheSearchBehavior.GET_OR_OPEN)
         }.join().get
-        val obj    = new GameSessionImpl(3, new DefaultLevel)
         center.findObject(0)
-                .getOrElse(center.postObject(0, obj))
+                .getOrElse(center.postObject(0, new GameSessionImpl(3, new DefaultLevel)))
     }
+    println("Game Session found !")
     private val background           = new Texture("background.png")
     createPlayers()
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
     private def createPlayers(): Unit = {
-        val player1    = new ShooterCharacter(500, 550, Color.GREEN)
+        val player1    = new ShooterCharacter(500 + (session.getMaxPlayers * 50), 550, Color.GREEN)
         val controller = new CharacterController(player1)
         controller.addKeyControl(KeyControl.of(KeyType.DASH, A, _.dash()))
         controller.addKeyControl(KeyControl.of(KeyType.JUMP, SPACE, _.jump()))
@@ -53,8 +59,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     }
 
     override def update(deltaTime: Float): Unit = {
-        handleInputs()
         session.updateScene(deltaTime)
+        handleInputs()
     }
 
     override def render(batch: SpriteBatch): Unit = {

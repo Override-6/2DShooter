@@ -1,4 +1,4 @@
-package fr.overrride.game.shooter.api.session.weapons;
+package fr.overrride.game.shooter.api.session.weapon;
 
 import com.badlogic.gdx.math.Vector2;
 

@@ -3,9 +3,9 @@ package fr.overrride.game.shooter.session.weapons;
 import com.badlogic.gdx.math.Vector2;
 import fr.overrride.game.shooter.api.other.animations.Animator;
 import fr.overrride.game.shooter.api.other.animations.RotationAnimation;
-import fr.overrride.game.shooter.api.session.weapons.Bullet;
-import fr.overrride.game.shooter.api.session.weapons.Muzzle;
-import fr.overrride.game.shooter.api.session.weapons.Weapon;
+import fr.overrride.game.shooter.api.session.weapon.Bullet;
+import fr.overrride.game.shooter.api.session.weapon.Muzzle;
+import fr.overrride.game.shooter.api.session.weapon.Weapon;
 import org.jetbrains.annotations.Nullable;
 
 public class PistolMuzzle implements Muzzle {

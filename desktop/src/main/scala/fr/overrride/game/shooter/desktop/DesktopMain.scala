@@ -7,7 +7,7 @@ import fr.linkit.client.ClientApplication
 import fr.linkit.client.local.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
 import fr.linkit.client.local.config.schematic.ScalaClientAppSchematic
 import fr.linkit.engine.local.utils.NumberSerializer
-import fr.overrride.game.shooter.GameAdapter
+import fr.overrride.game.shooter.{GameAdapter, GameConstants}
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
@@ -16,8 +16,8 @@ import scala.io.StdIn
 
 object DesktopMain {
 
-    val WindowWidth : Int = 1920 / 2
-    val WindowHeight: Int = 1080 / 2
+    val WindowWidth : Int = GameConstants.WINDOW_WIDTH.toInt
+    val WindowHeight: Int = GameConstants.WINDOW_HEIGHT.toInt
     val GameTitle         = "2DShooter"
     val Port = 48485
     val ServerAddress   : InetSocketAddress = new InetSocketAddress("localhost", Port)
