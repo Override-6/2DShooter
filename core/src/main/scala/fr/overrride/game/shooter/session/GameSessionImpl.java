@@ -1,8 +1,8 @@
 package fr.overrride.game.shooter.session;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind;
-import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind;
+import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.ParticleManager;
 import fr.overrride.game.shooter.api.session.character.Character;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.LOCAL_AND_REMOTES;
-import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_LOCAL;
+import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.LOCAL_AND_REMOTES;
+import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.ONLY_LOCAL;
 
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {

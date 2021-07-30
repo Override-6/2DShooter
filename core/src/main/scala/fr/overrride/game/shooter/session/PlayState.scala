@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
-import fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind
+import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind
 import fr.linkit.engine.connection.cache.obj.DefaultEngineObjectCenter
 import fr.linkit.engine.connection.cache.obj.description.WrapperBehaviorBuilder.MethodControl
 import fr.linkit.engine.connection.cache.obj.description.{TreeViewDefaultBehavior, WrapperBehaviorBuilder}
@@ -22,6 +22,9 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     val tree = new TreeViewDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
     new WrapperBehaviorBuilder[GameSessionImpl](tree) {
         annotateAll("addCharacter") by MethodControl(InvocationKind.LOCAL_AND_REMOTES, synchronizedParams = Seq(true))
+        annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
+    }.build
+    new WrapperBehaviorBuilder[ShooterCharacter](tree) {
         annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
     }.build
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {

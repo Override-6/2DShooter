@@ -1,7 +1,7 @@
 package fr.overrride.game.shooter.session.character;
 
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.repo.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
 import fr.overrride.game.shooter.api.other.actions.Action;
 import fr.overrride.game.shooter.api.other.actions.ActionCompleter;
 import fr.overrride.game.shooter.api.other.actions.SimpleAction;
@@ -11,7 +11,7 @@ import fr.overrride.game.shooter.api.session.character.Controllable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.linkit.api.connection.cache.repo.description.annotation.InvocationKind.ONLY_LOCAL;
+import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.ONLY_LOCAL;
 
 public class AxisControllerImpl implements AxisController {
 
