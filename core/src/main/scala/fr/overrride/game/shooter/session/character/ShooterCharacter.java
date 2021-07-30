@@ -1,5 +1,6 @@
 package fr.overrride.game.shooter.session.character;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -152,9 +153,11 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     @Override
     public void setWeapon(Weapon weapon) {
-        this.weapon.dispose();
-        weapon.setGameSession(session);
-        this.weapon = weapon;
+        Gdx.app.postRunnable(() -> {
+            this.weapon.dispose();
+            weapon.setGameSession(session);
+            this.weapon = weapon;
+        });
     }
 
     @Override

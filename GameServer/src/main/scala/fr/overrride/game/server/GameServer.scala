@@ -1,6 +1,6 @@
 package fr.overrride.game.server
 
-import com.badlogic.gdx.backends.lwjgl.LwjglFileHandle
+import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration, LwjglFileHandle}
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.local.system.AppLogger
@@ -9,6 +9,7 @@ import fr.linkit.engine.local.utils.NumberSerializer
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.local.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.local.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
+import fr.overrride.game.shooter.GameAdapter
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
@@ -44,6 +45,15 @@ object GameServer {
                 .cache
                 .retrieveCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
+
+        val config = new LwjglApplicationConfiguration
+        config.width = 100
+        config.height = 15
+        config.x = 0
+        config.y = 0
+        config.title = "GameServer"
+        new LwjglApplication(new DumbApplicationAdapter, config)
+
 
         while (true) {
             val line = StdIn.readLine()

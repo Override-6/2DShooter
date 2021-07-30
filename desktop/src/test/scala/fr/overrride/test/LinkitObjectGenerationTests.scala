@@ -1,8 +1,8 @@
 package fr.overrride.test
 
 import com.badlogic.gdx.graphics.Color
-import fr.linkit.api.connection.cache.repo.PuppetWrapper
-import fr.linkit.api.connection.cache.repo.description.PuppeteerInfo
+import fr.linkit.api.connection.cache.obj.PuppetWrapper
+import fr.linkit.api.connection.cache.obj.description.PuppeteerInfo
 import fr.linkit.api.local.resource.external.ResourceFolder
 import fr.linkit.api.local.system.config.ApplicationConfiguration
 import fr.linkit.api.local.system.fsa.FileSystemAdapter
@@ -71,14 +71,14 @@ object LinkitObjectGenerationTests {
         val generator   = new PuppetWrapperClassGenerator(new DefaultCompilerCenter, resource)
         val desc = SimplePuppetClassDescription[A](cl)
         val puppetClass = generator.getPuppetClass[A](desc)
-        println(s"puppetClass = ${puppetClass}")
+        println(s"puppetClass = $puppetClass")
         val factory = AnnotationBasedMemberBehaviorFactory()
         val pup     = new InstancePuppeteer[A](null, app, null, PuppeteerInfo("", 8, "", Array(1)), SimpleWrapperBehavior(desc, new TreeViewDefaultBehavior(factory)))
         val wrapper  = CloneHelper.instantiateFromOrigin[A](puppetClass, obj)
 
         wrapper.initPuppeteer(pup)
         wrapper.getChoreographer.forceLocalInvocation {
-            println(s"wrapper = ${wrapper}")
+            println(s"wrapper = $wrapper")
             println(s"wrapper.getWrappedClass = ${wrapper.getWrappedClass}")
         }
         wrapper
