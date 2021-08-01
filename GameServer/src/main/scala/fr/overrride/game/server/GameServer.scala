@@ -4,12 +4,11 @@ import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfig
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.local.system.AppLogger
-import fr.linkit.engine.connection.cache.obj.DefaultEngineObjectCenter
+import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
 import fr.linkit.engine.local.utils.NumberSerializer
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.local.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.local.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
-import fr.overrride.game.shooter.GameAdapter
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
@@ -43,7 +42,7 @@ object GameServer {
                 .network
                 .serverEngine
                 .cache
-                .retrieveCache(0, DefaultEngineObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
+                .retrieveCache(0, DefaultSynchronizedObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
 
         val config = new LwjglApplicationConfiguration

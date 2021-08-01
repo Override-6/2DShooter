@@ -10,7 +10,7 @@ import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.Controllable
 import fr.overrride.game.shooter.session.GameSessionImpl
 import fr.overrride.game.shooter.session.character.ShooterCharacter
-import fr.overrride.test.LinkitPacketTests.testPacket
+import fr.overrride.test.LinkitPacketTests.{testDeserialization, testPacket}
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.{BeforeAll, Test, TestInstance}
 
@@ -38,10 +38,13 @@ object LinkitPacketTests {
 
     def testPacket(obj: Array[AnyRef]): Unit = {
         println(s"Serializing packets ${obj.mkString("Array(", ", ", ")")}...")
-        val buff = ByteBuffer.allocate(1000)
+        val buff = ByteBuffer.allocate(10000)
         serializer.serializePacket(obj, DedicatedPacketCoordinates(78, "SALAM", "SALAM"), buff, true)
+        testDeserialization(buff)
+    }
+
+    private def testDeserialization(buff: ByteBuffer): Unit = {
         val bytes = buff.array().take(buff.position())
-        buff.position(0)
         println(s"bytes = ${ScalaUtils.toPresentableString(bytes)} (size: ${bytes.length})")
         val deserial = serializer.deserializePacket(buff)
         println(s"deserialized coords = ${deserial.getCoordinates}")
