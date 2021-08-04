@@ -72,6 +72,7 @@ public class RectangleComponent implements Collidable, Colorable {
     }
 
     @Override
+    @MethodControl(InvocationKind.ONLY_LOCAL)
     public boolean isSolid() {
         return solid;
     }

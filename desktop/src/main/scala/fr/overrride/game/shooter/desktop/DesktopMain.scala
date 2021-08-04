@@ -23,14 +23,14 @@ object DesktopMain {
     val ServerAddress   : InetSocketAddress = new InetSocketAddress("localhost", Port)
 
     def main(arg: Array[String]): Unit = {
-        val config = new LwjglApplicationConfiguration
-        config.width = WindowWidth
-        config.height = WindowHeight
-        config.title = GameTitle
-
         println("Choose client identifier.")
         print(" > ")
         val clientIdentifier = StdIn.readLine()
+
+        val config = new LwjglApplicationConfiguration
+        config.width = WindowWidth
+        config.height = WindowHeight
+        config.title = GameTitle + s" - $clientIdentifier"
 
         val clientConfig = new ClientApplicationConfigBuilder {
             override val resourcesFolder: String = System.getenv("LinkitHome")
@@ -54,5 +54,11 @@ object DesktopMain {
         AppLogger.info("Linkit client Application started, Starting LwjglApplication...")
         new LwjglApplication(new GameAdapter(connection), config)
         AppLogger.info("LwjglApplication started !")
+
+        while (true) {
+            val line = StdIn.readLine()
+            if (line == "stop")
+                return
+        }
     }
 }
