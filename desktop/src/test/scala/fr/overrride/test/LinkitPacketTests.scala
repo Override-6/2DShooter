@@ -34,7 +34,7 @@ class LinkitPacketTests {
 
 object LinkitPacketTests {
 
-    val serializer = new DefaultPacketSerializer
+    val serializer = new DefaultPacketSerializer(null)
 
     def testPacket(obj: Array[AnyRef]): Unit = {
         println(s"Serializing packets ${obj.mkString("Array(", ", ", ")")}...")

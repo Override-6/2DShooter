@@ -18,7 +18,7 @@ import java.util.Optional;
 public class RectangleComponent implements Collidable, Colorable {
 
     private final Texture texture = new Texture("componentBase.png");
-    @FieldControl(synchronize = true)
+    @FieldControl()
     protected final Vector2 position;
     private Color color;
     private GameSession gameSession;
