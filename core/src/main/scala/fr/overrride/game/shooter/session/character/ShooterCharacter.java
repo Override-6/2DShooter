@@ -79,12 +79,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
-    public void dash() {
-        dash.use();
-    }
-
-    @Override
     @MethodControl(ONLY_LOCAL)
     public void render(SpriteBatch batch) {
         super.render(batch);
@@ -101,19 +95,25 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    //@MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    public void dash() {
+        dash.use();
+    }
+
+    @Override
+    //@MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void right() {
         velocity.x += SPEED;
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    //@MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void left() {
         velocity.x -= SPEED;
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    //@MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void jump() {
 
         if (isOnGround)
@@ -134,24 +134,22 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public Controller<Character> getController() {
         return controller;
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void setController(Controller<Character> controller) {
         this.controller = controller;
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public Weapon getWeapon() {
         return weapon;
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void setWeapon(Weapon weapon) {
         Gdx.app.postRunnable(() -> {
             this.weapon.dispose();
@@ -161,25 +159,21 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public boolean canShoot() {
         return weapon.canShoot();
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public Vector2 getVelocity() {
         return velocity;
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public Vector2 getLocation() {
         return position;
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void onCollision(Collidable collidable) {
         if (collidable instanceof Bullet) {
             handleBulletCollision((Bullet) collidable);
@@ -198,25 +192,21 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public boolean canCollide() {
         return true;
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void setCollidable(boolean canCollide) {
 
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public Optional<GameSession> getCurrentGameSession() {
         return Optional.ofNullable(session);
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void setGameSession(@Nullable GameSession gameSession) {
         this.session = gameSession;
         if (weapon != null)
@@ -225,13 +215,11 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public float getHealth() {
         return healthBar.getProgress();
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public float getMaxHealth() {
         return MAX_HEALTH;
     }

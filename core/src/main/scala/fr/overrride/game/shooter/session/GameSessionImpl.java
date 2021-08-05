@@ -14,6 +14,8 @@ import fr.overrride.game.shooter.api.session.levels.Level;
 import java.util.HashSet;
 import java.util.Set;
 
+import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.LOCAL_AND_REMOTES;
+
 public class GameSessionImpl implements GameSession {
 
     private final Set<Controllable<?>> players = new HashSet<>();
@@ -81,6 +83,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
+    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);

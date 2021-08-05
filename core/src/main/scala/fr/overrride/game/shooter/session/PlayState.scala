@@ -3,6 +3,7 @@ package fr.overrride.game.shooter.session
 import com.badlogic.gdx.Input.Keys._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
+import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind
@@ -26,6 +27,9 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     }.build
     new WrapperBehaviorBuilder[ShooterCharacter](tree) {
         annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
+    }.build
+    new WrapperBehaviorBuilder[Vector2](tree) {
+        annotateAll("add") by MethodControl(InvocationKind.LOCAL_AND_REMOTES)
     }.build
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
