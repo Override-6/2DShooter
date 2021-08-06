@@ -29,7 +29,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
     }.build
     new WrapperBehaviorBuilder[Vector2](tree) {
-        annotateAll("add") by MethodControl(InvocationKind.LOCAL_AND_REMOTES)
+        annotateAll("set") by MethodControl(InvocationKind.LOCAL_AND_REMOTES)
     }.build
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])

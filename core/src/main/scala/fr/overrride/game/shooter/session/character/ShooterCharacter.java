@@ -16,9 +16,9 @@ import fr.overrride.game.shooter.api.session.character.Controller;
 import fr.overrride.game.shooter.api.session.comps.RectangleComponent;
 import fr.overrride.game.shooter.api.session.weapon.Bullet;
 import fr.overrride.game.shooter.api.session.weapon.Weapon;
-import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import fr.overrride.game.shooter.session.abilities.Dash;
 import fr.overrride.game.shooter.session.components.ProgressBar;
+import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -330,25 +330,28 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     private void handleVelocity(float deltaTime) {
         velocity.sub(0, GRAVITY);
         velocity.scl(deltaTime);
-        position.add(velocity);
+        Vector2 newPos = new Vector2(position);
+        newPos.add(velocity);
         velocity.scl(1 / deltaTime);
 
-        if (velocity.x > GameConstants.VIEWPORT_WIDTH - PLAYER_DIM) {
+        if (newPos.x > GameConstants.VIEWPORT_WIDTH - PLAYER_DIM) {
             velocity.setZero();
-            position.x = GameConstants.VIEWPORT_WIDTH - PLAYER_DIM;
+            newPos.x = GameConstants.VIEWPORT_WIDTH - PLAYER_DIM;
         }
-        if (position.x < 0) {
+        if (newPos.x < 0) {
             velocity.setZero();
-            position.x = 0;
+            newPos.x = 0;
         }
-        if (position.y > GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM) {
+        if (newPos.y > GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM) {
             velocity.setZero();
-            position.y = GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM;
+            newPos.y = GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM;
         }
-        if (position.y < 0) {
+        if (newPos.y < 0) {
             velocity.setZero();
-            position.y = 75;
+            newPos.y = 76;
         }
+        if (newPos.x != position.x || (newPos.y != position.y && position.y > 76))
+            position.set(newPos.x, newPos.y);
     }
 
     private void handleFriction() {
