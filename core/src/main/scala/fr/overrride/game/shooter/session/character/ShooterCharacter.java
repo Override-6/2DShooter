@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.PuppetWrapper;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
@@ -22,9 +24,6 @@ import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-
-import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.LOCAL_AND_REMOTES;
-import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.ONLY_LOCAL;
 
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
@@ -62,24 +61,29 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void update(float deltaTime) {
+        PuppetWrapper<ShooterCharacter> thisWrapper = (PuppetWrapper<ShooterCharacter>) this;
+        if (((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y))){
+            position.set(position.x, position.y); //refreshing remote positions
+        }
+
         lastPosition.set(position);
         lastVelocity.set(velocity);
 
-        handleVelocity(deltaTime);
-        handleFriction();
-        handleWalkingEffect();
+        if (thisWrapper.isOwnedByCurrent()) {
+            handleVelocity(deltaTime);
+            handleFriction();
+            handleWalkingEffect();
+            axisController.update(deltaTime);
+        }
 
         weapon.update(deltaTime);
-        axisController.update(deltaTime);
-
         healthBar.setPosition(position.x, position.y + height + 5);
         isOnGround = false;
+
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void render(SpriteBatch batch) {
         super.render(batch);
         healthBar.render(batch);
@@ -87,7 +91,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void dispose() {
         super.dispose();
         weapon.dispose();
@@ -128,7 +131,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void shoot() {
         weapon.shoot();
     }
@@ -149,7 +152,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void setWeapon(Weapon weapon) {
         Gdx.app.postRunnable(() -> {
             this.weapon.dispose();
@@ -225,7 +228,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void damage(float f) {
         healthBar.setProgress(healthBar.getProgress() - f);
         if (getHealth() <= 0)
@@ -233,14 +236,14 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void heal(float f) {
         if (getHealth() <= MAX_HEALTH)
             healthBar.setProgress(healthBar.getProgress() + f);
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void setHealth(float f) {
         healthBar.setProgress(f);
         if (getHealth() <= 0)
@@ -249,7 +252,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void kill() {
         getCurrentGameSession().ifPresent(session -> {
             session.getParticleManager()
@@ -330,28 +333,25 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     private void handleVelocity(float deltaTime) {
         velocity.sub(0, GRAVITY);
         velocity.scl(deltaTime);
-        Vector2 newPos = new Vector2(position);
-        newPos.add(velocity);
+        position.add(velocity);
         velocity.scl(1 / deltaTime);
 
-        if (newPos.x > GameConstants.VIEWPORT_WIDTH - PLAYER_DIM) {
+        if (position.x > GameConstants.VIEWPORT_WIDTH - PLAYER_DIM) {
             velocity.setZero();
-            newPos.x = GameConstants.VIEWPORT_WIDTH - PLAYER_DIM;
+            position.x = GameConstants.VIEWPORT_WIDTH - PLAYER_DIM;
         }
-        if (newPos.x < 0) {
+        if (position.x < 0) {
             velocity.setZero();
-            newPos.x = 0;
+            position.x = 0;
         }
-        if (newPos.y > GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM) {
+        if (position.y > GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM) {
             velocity.setZero();
-            newPos.y = GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM;
+            position.y = GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM;
         }
-        if (newPos.y < 0) {
+        if (position.y < 0) {
             velocity.setZero();
-            newPos.y = 76;
+            position.y = 76;
         }
-        if (newPos.x != position.x || (newPos.y != position.y && position.y > 76))
-            position.set(newPos.x, newPos.y);
     }
 
     private void handleFriction() {

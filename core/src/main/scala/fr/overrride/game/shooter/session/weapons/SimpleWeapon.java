@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Shooter;
@@ -14,8 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.ONLY_LOCAL;
-import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.ONLY_OWNER;
 import static fr.overrride.game.shooter.GameConstants.SIZE_DIVIDE;
 
 
@@ -47,7 +46,6 @@ public class SimpleWeapon implements Weapon {
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void update(float dt) {
         int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
         int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
@@ -57,7 +55,6 @@ public class SimpleWeapon implements Weapon {
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void render(SpriteBatch batch) {
         Vector2 pos = getCenter();
 
@@ -69,7 +66,6 @@ public class SimpleWeapon implements Weapon {
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void dispose() {
         if (session != null)
             session.removeObject(this);
@@ -77,31 +73,26 @@ public class SimpleWeapon implements Weapon {
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public Optional<GameSession> getCurrentGameSession() {
         return Optional.ofNullable(session);
     }
 
     @Override
-    @MethodControl(ONLY_LOCAL)
     public void setGameSession(@Nullable GameSession gameSession) {
         this.session = gameSession;
     }
 
     @Override
-    @MethodControl(ONLY_OWNER)
     public float getRotation() {
         return rotation;
     }
 
     @Override
-    @MethodControl(ONLY_OWNER)
     public Vector2 getLocation() {
         return getCenter();
     }
 
     @Override
-    @MethodControl(ONLY_OWNER)
     public DrawPriority getDrawPriority() {
         return DrawPriority.FOREGROUND;
     }
@@ -112,13 +103,11 @@ public class SimpleWeapon implements Weapon {
     }
 
     @Override
-    @MethodControl(ONLY_OWNER)
     public void setRotation(float angle) {
         rotation = angle % 360;
     }
 
     @Override
-    @MethodControl(ONLY_OWNER)
     public Vector2 getSize() {
         return new Vector2(texture.getWidth(), texture.getHeight());
     }
@@ -132,7 +121,7 @@ public class SimpleWeapon implements Weapon {
         return System.currentTimeMillis() - lastShoot >= fireRate;
     }
 
-    @MethodControl(ONLY_LOCAL)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER)
     public void shoot() {
         Vector2 direction = new Vector2(0, 1);
         direction.rotate(rotation - 90);
@@ -141,7 +130,6 @@ public class SimpleWeapon implements Weapon {
         lastShoot = System.currentTimeMillis();
     }
 
-    @MethodControl(ONLY_OWNER)
     public Shooter getOwner() {
         return owner;
     }

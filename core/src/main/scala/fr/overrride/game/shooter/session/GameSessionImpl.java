@@ -1,8 +1,8 @@
 package fr.overrride.game.shooter.session;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind;
-import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.ParticleManager;
 import fr.overrride.game.shooter.api.session.character.Character;
@@ -13,8 +13,6 @@ import fr.overrride.game.shooter.api.session.levels.Level;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind.LOCAL_AND_REMOTES;
 
 public class GameSessionImpl implements GameSession {
 
@@ -31,13 +29,11 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public int getMaxPlayers() {
         return maxPlayers;
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public int countPlayers() {
         return players.size();
     }
@@ -62,7 +58,6 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void updateInputs() {
         players.forEach(character -> {
             Controller<?> ctrl = character.getController();
@@ -77,13 +72,12 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public ParticleManager getParticleManager() {
         return particleManager;
     }
 
     @Override
-    @MethodControl(value = LOCAL_AND_REMOTES, invokeOnly = true)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST, invokeOnly = true)
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);
@@ -92,21 +86,18 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void updateScene(float deltaTime) {
         sceneManager.update(deltaTime);
         particleManager.update(deltaTime);
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void renderScene(SpriteBatch batch) {
         sceneManager.render(batch);
         particleManager.render(batch);
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public void disposeScene() {
         sceneManager.dispose();
     }

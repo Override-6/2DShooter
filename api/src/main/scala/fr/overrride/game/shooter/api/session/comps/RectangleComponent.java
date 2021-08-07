@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.description.annotation.FieldControl;
-import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind;
-import fr.linkit.api.connection.cache.obj.description.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.FieldControl;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.character.Colorable;
@@ -74,7 +74,6 @@ public class RectangleComponent implements Collidable, Colorable {
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public boolean isSolid() {
         return solid;
     }
@@ -90,7 +89,6 @@ public class RectangleComponent implements Collidable, Colorable {
     }
 
     @Override
-    @MethodControl(InvocationKind.ONLY_LOCAL)
     public Rectangle getHitBox() {
         return new Rectangle(position.x, position.y, width, height);
     }

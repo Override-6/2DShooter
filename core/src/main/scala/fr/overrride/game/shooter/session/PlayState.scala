@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
-import fr.linkit.api.connection.cache.obj.description.annotation.InvocationKind
+import fr.linkit.api.connection.cache.obj.SynchronizedObjectCenter
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
-import fr.linkit.engine.connection.cache.obj.description.WrapperBehaviorBuilder.MethodControl
-import fr.linkit.engine.connection.cache.obj.description.annotation.AnnotationBasedMemberBehaviorFactory
-import fr.linkit.engine.connection.cache.obj.description.{ObjectTreeDefaultBehavior, WrapperBehaviorBuilder}
+import fr.linkit.engine.connection.cache.obj.behavior.WrapperBehaviorBuilder.MethodControl
+import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, WrapperBehaviorBuilder, WrapperBehaviorTreeBuilder}
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
@@ -20,20 +20,17 @@ import fr.overrride.game.shooter.session.levels.DefaultLevel
 
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
-    val tree = new ObjectTreeDefaultBehavior(new AnnotationBasedMemberBehaviorFactory())
-    new WrapperBehaviorBuilder[GameSessionImpl](tree) {
-        annotateAll("addCharacter") by MethodControl(InvocationKind.LOCAL_AND_REMOTES, synchronizedParams = Seq(true))
-        annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
-    }.build
-    new WrapperBehaviorBuilder[ShooterCharacter](tree) {
-        annotateAll("toString") and "equals" and "hashCode" by MethodControl(InvocationKind.ONLY_LOCAL)
-    }.build
-    new WrapperBehaviorBuilder[Vector2](tree) {
-        annotateAll("set") by MethodControl(InvocationKind.LOCAL_AND_REMOTES)
+    private val tree                 = new WrapperBehaviorTreeBuilder(AnnotationBasedMemberBehaviorFactory) {
+        behaviors += new WrapperBehaviorBuilder[GameSessionImpl]() {
+            annotateAllMethods("addCharacter") by MethodControl(BasicRemoteInvocationRule.BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
+        }
+        behaviors += new WrapperBehaviorBuilder[Vector2]() {
+            annotateAllMethods("set") by MethodControl(BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
+        }
     }.build
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
-        val center = connection.runLaterControl {
+        val center: SynchronizedObjectCenter[GameSession] = connection.runLaterControl {
             connection
                     .network
                     .serverEngine
@@ -43,7 +40,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         center.getOrPost(0, new GameSessionImpl(3, new DefaultLevel))
     }
     println("Game Session found !")
-    private val background           = new Texture("background.png")
+    private val background = new Texture("background.png")
     createPlayers()
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
