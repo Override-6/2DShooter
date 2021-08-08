@@ -1,5 +1,6 @@
 package fr.overrride.game.shooter.session
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
@@ -8,6 +9,7 @@ import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.connection.cache.obj.SynchronizedObjectCenter
 import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule
+import fr.linkit.api.local.concurrency.Procrastinator
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
 import fr.linkit.engine.connection.cache.obj.behavior.WrapperBehaviorBuilder.MethodControl
 import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, WrapperBehaviorBuilder, WrapperBehaviorTreeBuilder}
@@ -20,9 +22,13 @@ import fr.overrride.game.shooter.session.levels.DefaultLevel
 
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
+    private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
     private val tree                 = new WrapperBehaviorTreeBuilder(AnnotationBasedMemberBehaviorFactory) {
         behaviors += new WrapperBehaviorBuilder[GameSessionImpl]() {
             annotateAllMethods("addCharacter") by MethodControl(BasicRemoteInvocationRule.BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
+        }
+        behaviors += new WrapperBehaviorBuilder[ShooterCharacter]() {
+            annotateAllMethods("damage") and "setWeapon" by MethodControl(BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
         }
         behaviors += new WrapperBehaviorBuilder[Vector2]() {
             annotateAllMethods("set") by MethodControl(BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
