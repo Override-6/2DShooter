@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.connection.cache.obj.SynchronizedObjectCenter
-import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule._
 import fr.linkit.api.local.concurrency.Procrastinator
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
 import fr.linkit.engine.connection.cache.obj.behavior.WrapperBehaviorBuilder.MethodControl
@@ -25,13 +25,13 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
     private val tree                 = new WrapperBehaviorTreeBuilder(AnnotationBasedMemberBehaviorFactory) {
         behaviors += new WrapperBehaviorBuilder[GameSessionImpl]() {
-            annotateAllMethods("addCharacter") by MethodControl(BasicRemoteInvocationRule.BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
+            annotateAllMethods("addCharacter") by MethodControl(BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
         }
         behaviors += new WrapperBehaviorBuilder[ShooterCharacter]() {
-            annotateAllMethods("damage") and "setWeapon" by MethodControl(BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
+            annotateAllMethods("damage") and "setWeapon" by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
         }
         behaviors += new WrapperBehaviorBuilder[Vector2]() {
-            annotateAllMethods("set") by MethodControl(BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
+            annotateAllMethods("set") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true)
         }
     }.build
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
@@ -51,7 +51,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
     private def createPlayers(): Unit = {
-        val player1    = new ShooterCharacter(500 + (session.getMaxPlayers * 50), 550, Color.GREEN)
+        val player1    = new ShooterCharacter(500 + (session.countPlayers() * 100), 75, Color.GREEN)
         val controller = new CharacterController(player1)
         controller.addKeyControl(KeyControl.of(KeyType.DASH, A, _.dash()))
         controller.addKeyControl(KeyControl.of(KeyType.JUMP, SPACE, _.jump()))
