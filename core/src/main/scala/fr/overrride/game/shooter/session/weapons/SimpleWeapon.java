@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import fr.linkit.api.connection.cache.obj.SynchronizedObject;
 import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
 import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.other.util.MathUtils;
@@ -11,6 +12,7 @@ import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Shooter;
 import fr.overrride.game.shooter.api.session.weapon.Muzzle;
 import fr.overrride.game.shooter.api.session.weapon.Weapon;
+import fr.overrride.game.shooter.session.character.ShooterCharacter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -47,10 +49,13 @@ public class SimpleWeapon implements Weapon {
 
     @Override
     public void update(float dt) {
-        int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
-        int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
+        SynchronizedObject<ShooterCharacter> syncOwner = (SynchronizedObject<ShooterCharacter>) owner;
+        if (syncOwner.isOwnedByCurrent()) {
+            int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
+            int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
 
-        rotation = MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13); //TODO GameConstants
+            setRotation(MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13));
+        }
         muzzle.update(dt);
     }
 
@@ -102,7 +107,7 @@ public class SimpleWeapon implements Weapon {
         //no-op
     }
 
-    @Override
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void setRotation(float angle) {
         rotation = angle % 360;
     }
@@ -121,7 +126,7 @@ public class SimpleWeapon implements Weapon {
         return System.currentTimeMillis() - lastShoot >= fireRate;
     }
 
-    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER)
+    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void shoot() {
         Vector2 direction = new Vector2(0, 1);
         direction.rotate(rotation - 90);

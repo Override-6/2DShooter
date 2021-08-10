@@ -1,7 +1,7 @@
 package fr.overrride.test
 
 import com.badlogic.gdx.graphics.Color
-import fr.linkit.api.connection.cache.obj.PuppetWrapper
+import fr.linkit.api.connection.cache.obj.SynchronizedObject
 import fr.linkit.api.connection.cache.obj.description.PuppeteerInfo
 import fr.linkit.api.local.resource.external.ResourceFolder
 import fr.linkit.api.local.system.config.ApplicationConfiguration
@@ -10,7 +10,7 @@ import fr.linkit.api.local.system.security.ApplicationSecurityManager
 import fr.linkit.api.local.system.{AppLogger, Version}
 import fr.linkit.engine.connection.cache.obj.description.annotation.AnnotationBasedMemberBehaviorFactory
 import fr.linkit.engine.connection.cache.obj.description.{SimplePuppetClassDescription, SimpleWrapperBehavior, TreeViewDefaultBehavior}
-import fr.linkit.engine.connection.cache.obj.generation.{CloneHelper, PuppetWrapperClassGenerator, WrappersClassResource}
+import fr.linkit.engine.connection.cache.obj.generation.{CloneHelper, SynchronizedObjectClassGenerator, WrappersClassResource}
 import fr.linkit.engine.connection.cache.obj.invokation.remote.InstancePuppeteer
 import fr.linkit.engine.local.LinkitApplication
 import fr.linkit.engine.local.generation.compilation.access.DefaultCompilerCenter
@@ -62,13 +62,13 @@ object LinkitObjectGenerationTests {
         AppLogger.useVerbose = true
     }
 
-    def forObject[A: TypeTag](obj: A): A with PuppetWrapper[A] = {
+    def forObject[A: TypeTag](obj: A): A with SynchronizedObject[A] = {
         Assertions.assertNotNull(resources)
         val cl = obj.getClass.asInstanceOf[Class[A]]
 
         import fr.linkit.engine.local.resource.external.LocalResourceFolder._
         val resource    = resources.getOrOpenThenRepresent[WrappersClassResource](LinkitApplication.getProperty("compilation.working_dir.classes"))
-        val generator   = new PuppetWrapperClassGenerator(new DefaultCompilerCenter, resource)
+        val generator   = new SynchronizedObjectClassGenerator(new DefaultCompilerCenter, resource)
         val desc = SimplePuppetClassDescription[A](cl)
         val puppetClass = generator.getPuppetClass[A](desc)
         println(s"puppetClass = $puppetClass")

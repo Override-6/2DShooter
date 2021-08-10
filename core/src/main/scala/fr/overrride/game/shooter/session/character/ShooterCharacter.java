@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.PuppetWrapper;
+import fr.linkit.api.connection.cache.obj.SynchronizedObject;
 import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
@@ -62,7 +62,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     @Override
     public void update(float deltaTime) {
-        PuppetWrapper<ShooterCharacter> thisWrapper = (PuppetWrapper<ShooterCharacter>) this;
+        SynchronizedObject<ShooterCharacter> thisWrapper = (SynchronizedObject<ShooterCharacter>) this;
         if (((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y))) {
             position.set(position.x, position.y); //refreshing remote positions
         }
@@ -122,7 +122,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
             return;
 
         velocity.y += JUMP_HEIGHT;
-
     }
 
     @Override
@@ -291,7 +290,9 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
                 session.getParticleManager().playEffect("particles/dashImpact.party", x, position.y, getColor());
             else session.getParticleManager().playEffect("particles/dashImpact.party", x, position.y, getColor(),
                     -50.0F, -150.0F, 0, 0);
+            //return;
         }
+        //character.getVelocity().x = lastVelocity.x / 2;
     }
 
     private void replaceNextTo(Rectangle hitBox) {

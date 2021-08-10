@@ -28,7 +28,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
             annotateAllMethods("addCharacter") by MethodControl(BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
         }
         behaviors += new WrapperBehaviorBuilder[ShooterCharacter]() {
-            annotateAllMethods("damage") and "setWeapon" by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
+            annotateAllMethods("damage") and "dash" by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
+            annotateAllMethods("setWeapon") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, synchronizedParams = Seq(true))
         }
         behaviors += new WrapperBehaviorBuilder[Vector2]() {
             annotateAllMethods("set") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true)
