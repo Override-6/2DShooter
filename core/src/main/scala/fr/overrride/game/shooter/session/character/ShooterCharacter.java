@@ -66,21 +66,18 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
         if (((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y))) {
             position.set(position.x, position.y); //refreshing remote positions
         }
-
         lastPosition.set(position);
         lastVelocity.set(velocity);
-
         if (thisWrapper.isOwnedByCurrent()) {
-            handleVelocity(deltaTime);
             handleFriction();
-            handleWalkingEffect();
+            handleVelocity(deltaTime);
             axisController.update(deltaTime);
         }
+        handleWalkingEffect();
 
         weapon.update(deltaTime);
         healthBar.setPosition(position.x, position.y + height + 5);
         isOnGround = false;
-
     }
 
     @Override

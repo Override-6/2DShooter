@@ -78,6 +78,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         batch.draw(background, 0, 0)
         session.renderScene(batch)
         batch.end()
+        //println("FPS : " + Gdx.graphics.getFramesPerSecond)
     }
 
     override def dispose(): Unit = {

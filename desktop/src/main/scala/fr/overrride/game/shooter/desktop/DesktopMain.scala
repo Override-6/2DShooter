@@ -30,7 +30,7 @@ object DesktopMain {
         val config = new LwjglApplicationConfiguration
         config.width = WindowWidth
         config.height = WindowHeight
-        config.foregroundFPS = 30
+        config.foregroundFPS = 60
         config.title = GameTitle + s" - $clientIdentifier"
 
         val clientConfig = new ClientApplicationConfigBuilder {

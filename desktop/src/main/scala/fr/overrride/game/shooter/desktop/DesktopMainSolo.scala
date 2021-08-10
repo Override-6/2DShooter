@@ -12,6 +12,5 @@ object DesktopMainSolo {
         config.height = WindowHeight
         config.title = GameTitle
         new LwjglApplication(new GameAdapter(null), config)
-
     }
 }
