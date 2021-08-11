@@ -77,7 +77,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST, invokeOnly = true)
+    //@MethodControl(value = BasicRemoteInvocationRule.BROADCAST, invokeOnly = true)
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);

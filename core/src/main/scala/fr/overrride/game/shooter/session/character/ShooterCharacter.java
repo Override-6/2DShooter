@@ -21,8 +21,6 @@ import fr.overrride.game.shooter.session.components.ProgressBar;
 import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 import static fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule.BROADCAST_IF_OWNER;
 
 
@@ -30,7 +28,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     private Weapon weapon;
     private transient Controller<Character> controller = null;
-    private GameSession session = null;
     private final AxisController axisController;
     private final ProgressBar healthBar;
 
@@ -71,8 +68,8 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
         if (thisWrapper.isOwnedByCurrent()) {
             handleFriction();
             handleVelocity(deltaTime);
-            axisController.update(deltaTime);
         }
+        axisController.update(deltaTime);
         handleWalkingEffect();
 
         weapon.update(deltaTime);
@@ -149,7 +146,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
     public void setWeapon(Weapon weapon) {
         this.weapon.dispose();
-        weapon.setGameSession(session);
+        weapon.setGameSession(gameSession);
         this.weapon = weapon;
     }
 
@@ -196,17 +193,13 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     }
 
-    @Override
-    public Optional<GameSession> getCurrentGameSession() {
-        return Optional.ofNullable(session);
-    }
 
     @Override
     public void setGameSession(@Nullable GameSession gameSession) {
-        this.session = gameSession;
+        this.gameSession = gameSession;
         if (weapon != null)
             weapon.setGameSession(gameSession);
-        healthBar.setGameSession(gameSession);
+        super.setGameSession(gameSession);
     }
 
     @Override
@@ -287,8 +280,8 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
             float x = position.x + (isBackward ? width : 0);
 
             if (isBackward)
-                session.getParticleManager().playEffect("particles/dashImpact.party", x, position.y, getColor());
-            else session.getParticleManager().playEffect("particles/dashImpact.party", x, position.y, getColor(),
+                gameSession.getParticleManager().playEffect("particles/dashImpact.party", x, position.y, getColor());
+            else gameSession.getParticleManager().playEffect("particles/dashImpact.party", x, position.y, getColor(),
                     -50.0F, -150.0F, 0, 0);
             //return;
         }
@@ -369,7 +362,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
             return;
         boolean isBackward = velocity.x < 0;
         float x = isBackward ? position.x + width : position.x;
-        session.getParticleManager()
+        gameSession.getParticleManager()
                 .playEffect("particles/walk.party", x, position.y, getColor());
     }
 

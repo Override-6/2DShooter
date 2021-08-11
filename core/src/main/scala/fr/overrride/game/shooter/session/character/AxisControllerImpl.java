@@ -1,7 +1,6 @@
 package fr.overrride.game.shooter.session.character;
 
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.other.actions.Action;
 import fr.overrride.game.shooter.api.other.actions.ActionCompleter;
 import fr.overrride.game.shooter.api.other.actions.SimpleAction;
@@ -15,8 +14,8 @@ import java.util.List;
 public class AxisControllerImpl implements AxisController {
 
     private final Controllable<?> controllable;
-    private transient final List<ActionCompleter> yActions = new ArrayList<>();
-    private transient final List<ActionCompleter> xActions = new ArrayList<>();
+    private transient List<ActionCompleter> yActions = new ArrayList<>();
+    private transient List<ActionCompleter> xActions = new ArrayList<>();
 
     private int xMills = 0, yMillis = 0;
     private float xAxis = 0, yAxis = 0;
@@ -27,6 +26,12 @@ public class AxisControllerImpl implements AxisController {
 
     @Override
     public void update(float deltaTime) {
+        if (yActions == null) {
+            yActions = new ArrayList<>();
+        }
+        if (xActions == null) {
+            xActions = new ArrayList<>();
+        }
         Vector2 pos = controllable.getLocation();
         Vector2 velocity = controllable.getVelocity();
 
@@ -43,7 +48,7 @@ public class AxisControllerImpl implements AxisController {
             pos.y = yAxis;
             velocity.y = 0;
             yMillis -= deltaTime * 60 * 60;
-        } else if (yActions != null){
+        } else {
             yActions.forEach(ActionCompleter::onActionCompleted);
             yActions.clear();
         }

@@ -71,7 +71,8 @@ public class SceneManager {
                 if (!otherCollidable.canCollide())
                     return;
 
-                if (otherCollidable.getHitBox().overlaps(hitBox)) {
+                Rectangle otherHitBox = otherCollidable.getHitBox();
+                if (otherHitBox.overlaps(hitBox)) {
                     collidable.onCollision(otherCollidable);
                     otherCollidable.onCollision(collidable);
                     notHandeleds.remove(object);

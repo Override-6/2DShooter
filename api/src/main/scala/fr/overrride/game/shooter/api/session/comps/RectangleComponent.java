@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.connection.cache.obj.behavior.annotation.FieldControl;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.character.Colorable;
@@ -21,7 +19,7 @@ public class RectangleComponent implements Collidable, Colorable {
     @FieldControl()
     protected final Vector2 position;
     private Color color;
-    private GameSession gameSession;
+    protected GameSession gameSession;
     private float rotation = 0;
 
     protected float width, height;
@@ -50,8 +48,14 @@ public class RectangleComponent implements Collidable, Colorable {
 
     }
 
+    private boolean isTextureLoaded = false;
+
     @Override
     public void render(SpriteBatch batch) {
+        if (!isTextureLoaded){
+            texture.load(texture.getTextureData());
+            isTextureLoaded = true;
+        }
         Color old = new Color(batch.getColor());
         batch.setColor(color);
         batch.draw(texture, position.x, position.y, width, height);

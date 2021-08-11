@@ -53,8 +53,9 @@ public class SimpleWeapon implements Weapon {
         if (syncOwner.isOwnedByCurrent()) {
             int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
             int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
-
-            setRotation(MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13));
+            int rotation = (int) MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13);
+            if ((int) this.rotation != rotation)
+                setRotation(rotation);
         }
         muzzle.update(dt);
     }
@@ -62,7 +63,6 @@ public class SimpleWeapon implements Weapon {
     @Override
     public void render(SpriteBatch batch) {
         Vector2 pos = getCenter();
-
         float x = pos.x - 7.5F;
         float y = pos.y;
 
@@ -126,8 +126,10 @@ public class SimpleWeapon implements Weapon {
         return System.currentTimeMillis() - lastShoot >= fireRate;
     }
 
-    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
+    //@MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
     public void shoot() {
+        if (!canShoot())
+            return;
         Vector2 direction = new Vector2(0, 1);
         direction.rotate(rotation - 90);
 
