@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
+import fr.linkit.engine.connection.packet.persistence.DefaultPacketSerializer
 import fr.linkit.engine.local.utils.NumberSerializer
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.local.config.schematic.ScalaServerAppSchematic
@@ -38,6 +39,8 @@ object GameServer {
             classOf[LwjglFileHandle],
             classOf[Color])
         val connection          = serverApp.getConnection(Port).get
+        val serializer = connection.translator.getSerializer.asInstanceOf[DefaultPacketSerializer]
+        serializer.context.executeConfigScript(getClass.getResource("/libgdx_persistence_config.sc"))
         val cache               = connection
                 .network
                 .serverEngine
