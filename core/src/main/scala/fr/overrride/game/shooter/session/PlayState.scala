@@ -8,11 +8,11 @@ import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.connection.cache.CacheSearchBehavior
 import fr.linkit.api.connection.cache.obj.SynchronizedObjectCenter
-import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule._
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule._
 import fr.linkit.api.local.concurrency.Procrastinator
 import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
-import fr.linkit.engine.connection.cache.obj.behavior.WrapperBehaviorBuilder.MethodControl
-import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, WrapperBehaviorBuilder, WrapperBehaviorTreeBuilder}
+import fr.linkit.engine.connection.cache.obj.behavior.SynchronizedObjectBehaviorBuilder.MethodControl
+import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, SynchronizedObjectBehaviorBuilder, SynchronizedObjectBehaviorStoreBuilder}
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
@@ -23,14 +23,11 @@ import fr.overrride.game.shooter.session.levels.DefaultLevel
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
-    private val tree                 = new WrapperBehaviorTreeBuilder(AnnotationBasedMemberBehaviorFactory) {
-        behaviors += new WrapperBehaviorBuilder[GameSessionImpl]() {
-            annotateAllMethods("addCharacter") by MethodControl(BROADCAST, invokeOnly = true, synchronizedParams = Seq(true))
-        }
-        behaviors += new WrapperBehaviorBuilder[ShooterCharacter]() {
+    private val tree                 = new SynchronizedObjectBehaviorStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
+        behaviors += new SynchronizedObjectBehaviorBuilder[ShooterCharacter]() {
             annotateAllMethods("damage") and "setWeapon" by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
         }
-        behaviors += new WrapperBehaviorBuilder[Vector2]() {
+        behaviors += new SynchronizedObjectBehaviorBuilder[Vector2]() {
             annotateAllMethods("set") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true)
         }
     }.build
@@ -39,11 +36,10 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         val center: SynchronizedObjectCenter[GameSession] = connection.runLaterControl {
             connection
                     .network
-                    .serverEngine
-                    .cache
-                    .retrieveCache(0, DefaultSynchronizedObjectCenter[GameSession](tree), CacheSearchBehavior.GET_OR_OPEN)
+                    .globalCache
+                    .attachToCache(51, DefaultSynchronizedObjectCenter[GameSession](tree), CacheSearchBehavior.GET_OR_OPEN)
         }.join().get
-        center.getOrPost(0, new GameSessionImpl(3, new DefaultLevel))
+        center.getOrPost(0)(new GameSessionImpl(3, new DefaultLevel))
     }
     println("Game Session found !")
     private val background = new Texture("background.png")

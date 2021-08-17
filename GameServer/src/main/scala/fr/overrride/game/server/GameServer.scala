@@ -40,9 +40,8 @@ object GameServer {
         val connection          = serverApp.getConnection(Port).get
         val cache               = connection
                 .network
-                .serverEngine
-                .cache
-                .retrieveCache(0, DefaultSynchronizedObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
+                .globalCache
+                .attachToCache(51, DefaultSynchronizedObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
 
         val config = new LwjglApplicationConfiguration

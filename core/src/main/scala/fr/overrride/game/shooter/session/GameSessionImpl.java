@@ -1,8 +1,9 @@
 package fr.overrride.game.shooter.session;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicRemoteInvocationRule;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule;
 import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.ParticleManager;
 import fr.overrride.game.shooter.api.session.character.Character;
@@ -39,7 +40,8 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    public void addCharacter(Character character) {
+    @MethodControl(value = BasicInvocationRule.BROADCAST, invokeOnly = true)
+    public void addCharacter(@Synchronized Character character) {
         if (players.size() > maxPlayers)
             throw new IllegalArgumentException("player limit reached !");
 
@@ -77,7 +79,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(value = BasicRemoteInvocationRule.BROADCAST, invokeOnly = true)
+    @MethodControl(value = BasicInvocationRule.BROADCAST, invokeOnly = true)
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);
