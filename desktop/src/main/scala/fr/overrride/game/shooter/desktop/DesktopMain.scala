@@ -2,13 +2,16 @@ package fr.overrride.game.shooter.desktop
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration, LwjglFileHandle}
 import com.badlogic.gdx.graphics.{Color, Texture}
+import fr.linkit.api.connection.ExternalConnection
 import fr.linkit.api.local.system.AppLogger
 import fr.linkit.client.ClientApplication
 import fr.linkit.client.local.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
 import fr.linkit.client.local.config.schematic.ScalaClientAppSchematic
+import fr.linkit.engine.connection.packet.persistence.DefaultPacketSerializer
 import fr.linkit.engine.local.utils.NumberSerializer
 import fr.overrride.game.shooter.{GameAdapter, GameConstants}
 import fr.overrride.game.shooter.api.session.GameSession
+import fr.overrride.game.shooter.desktop.linkit.TexturePersistence
 import fr.overrride.game.shooter.session.GameSessionImpl
 
 import java.net.InetSocketAddress
@@ -52,6 +55,7 @@ object DesktopMain {
             classOf[LwjglFileHandle],
             classOf[Color])
         val connection = client.getConnection(Port).get
+        handleConnection(connection)
         AppLogger.info("Linkit client Application started, Starting LwjglApplication...")
         new LwjglApplication(new GameAdapter(connection), config)
         AppLogger.info("LwjglApplication started !")
@@ -60,6 +64,13 @@ object DesktopMain {
             val line = StdIn.readLine()
             if (line == "stop")
                 return
+        }
+    }
+
+    private def handleConnection(connection: ExternalConnection): Unit = {
+        connection.translator.getSerializer match {
+            case serializer: DefaultPacketSerializer => serializer.context.executeConfigScript(getClass.getResource("/libgdx_persistence_config.sc"))
+            case _                                   =>
         }
     }
 }
