@@ -25,7 +25,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
     private val tree                 = new SynchronizedObjectBehaviorStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
         behaviors += new SynchronizedObjectBehaviorBuilder[ShooterCharacter]() {
-            annotateAllMethods("damage") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
+            annotateAllMethods("damage") and "setWeapon" by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
         }
         behaviors += new SynchronizedObjectBehaviorBuilder[Vector2]() {
             annotateAllMethods("set") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true)
