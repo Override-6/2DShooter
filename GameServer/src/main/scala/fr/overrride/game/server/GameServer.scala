@@ -39,12 +39,11 @@ object GameServer {
             classOf[LwjglFileHandle],
             classOf[Color])
         val connection          = serverApp.getConnection(Port).get
-        val serializer = connection.translator.getSerializer.asInstanceOf[DefaultPacketSerializer]
-        serializer.context.executeConfigScript(getClass.getResource("/libgdx_persistence_config.sc"))
+        val serializer          = connection.translator.getSerializer.asInstanceOf[DefaultPacketSerializer]
         val cache               = connection
-                .network
-                .globalCache
-                .attachToCache(51, DefaultSynchronizedObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
+            .network
+            .globalCache
+            .attachToCache(51, DefaultSynchronizedObjectCenter[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
 
         val config = new LwjglApplicationConfiguration

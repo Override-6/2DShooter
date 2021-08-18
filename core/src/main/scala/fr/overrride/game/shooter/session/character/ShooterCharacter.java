@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.connection.cache.obj.SynchronizedObject;
 import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
+import fr.linkit.api.connection.cache.obj.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
@@ -148,7 +149,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     @Override
     @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
-    public void setWeapon(Weapon weapon) {
+    public void setWeapon(@Synchronized Weapon weapon) {
         this.weapon.dispose();
         weapon.setGameSession(session);
         this.weapon = weapon;

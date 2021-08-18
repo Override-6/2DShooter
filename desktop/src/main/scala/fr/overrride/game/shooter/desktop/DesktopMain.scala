@@ -69,7 +69,6 @@ object DesktopMain {
 
     private def handleConnection(connection: ExternalConnection): Unit = {
         connection.translator.getSerializer match {
-            case serializer: DefaultPacketSerializer => serializer.context.executeConfigScript(getClass.getResource("/libgdx_persistence_config.sc"))
             case _                                   =>
         }
     }
