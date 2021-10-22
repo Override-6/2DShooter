@@ -26,12 +26,7 @@ public class AxisControllerImpl implements AxisController {
 
     @Override
     public void update(float deltaTime) {
-        if (yActions == null) {
-            yActions = new ArrayList<>();
-        }
-        if (xActions == null) {
-            xActions = new ArrayList<>();
-        }
+        initTransientFields();
         Vector2 pos = controllable.getLocation();
         Vector2 velocity = controllable.getVelocity();
 
@@ -62,6 +57,7 @@ public class AxisControllerImpl implements AxisController {
 
     @Override
     public Action blockXAxisFor(int millis) {
+        initTransientFields();
         xAxis = controllable.getLocation().x;
         xMills = millis;
         SimpleAction action = Action.build();
@@ -81,6 +77,7 @@ public class AxisControllerImpl implements AxisController {
 
     @Override
     public Action blockYAxisFor(int millis) {
+        initTransientFields();
         yAxis = controllable.getLocation().y;
         yMillis = millis;
         SimpleAction action = Action.build();
@@ -93,5 +90,11 @@ public class AxisControllerImpl implements AxisController {
         yAxis = 0;
     }
 
+    private void initTransientFields() {
+        if (yActions == null || xActions == null) {
+            xActions = new ArrayList<>();
+            yActions = new ArrayList<>();
+        }
+    }
 
 }

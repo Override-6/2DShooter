@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.SynchronizedObject;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.Synchronized;
+import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.MethodControl;
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
+import static fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
 
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
@@ -96,8 +96,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
-
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void dash() {
         dash.use();
     }
@@ -127,9 +126,9 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
     public void shoot() {
-        weapon.shoot();
+        if (canShoot())
+            weapon.shoot();
     }
 
     @Override
@@ -148,7 +147,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void setWeapon(@Synchronized Weapon weapon) {
         this.weapon.dispose();
         weapon.setGameSession(session);
@@ -222,7 +221,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void damage(float f) {
         healthBar.setProgress(healthBar.getProgress() - f);
         if (getHealth() <= 0)
@@ -230,14 +229,14 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void heal(float f) {
         if (getHealth() <= MAX_HEALTH)
             healthBar.setProgress(healthBar.getProgress() + f);
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void setHealth(float f) {
         healthBar.setProgress(f);
         if (getHealth() <= 0)
@@ -246,7 +245,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void kill() {
         getCurrentGameSession().ifPresent(session -> {
             session.getParticleManager()

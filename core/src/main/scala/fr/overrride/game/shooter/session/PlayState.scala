@@ -5,41 +5,45 @@ import com.badlogic.gdx.Input.Keys._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Vector2
-import fr.linkit.api.connection.ExternalConnection
-import fr.linkit.api.connection.cache.CacheSearchBehavior
-import fr.linkit.api.connection.cache.obj.SynchronizedObjectCenter
-import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule._
-import fr.linkit.api.local.concurrency.Procrastinator
-import fr.linkit.engine.connection.cache.obj.DefaultSynchronizedObjectCenter
-import fr.linkit.engine.connection.cache.obj.behavior.SynchronizedObjectBehaviorBuilder.MethodControl
-import fr.linkit.engine.connection.cache.obj.behavior.{AnnotationBasedMemberBehaviorFactory, SynchronizedObjectBehaviorBuilder, SynchronizedObjectBehaviorStoreBuilder}
+import fr.linkit.api.application.connection.ExternalConnection
+import fr.linkit.api.gnom.cache.CacheSearchBehavior
+import fr.linkit.api.gnom.cache.sync.SynchronizedObjectCache
+import fr.linkit.api.internal.concurrency.Procrastinator
+import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
+import fr.linkit.engine.gnom.cache.sync.behavior.ObjectBehaviorBuilder.MethodControl
+import fr.linkit.engine.gnom.cache.sync.behavior.{AnnotationBasedMemberBehaviorFactory, ObjectBehaviorBuilder, ObjectBehaviorStoreBuilder}
+import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
 import fr.overrride.game.shooter.GameConstants
+import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
+import fr.overrride.game.shooter.session.levels.DefaultLevel
+import fr.overrride.game.shooter.session.weapons.SimpleWeapon
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.{KeyControl, KeyType}
-import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
-import fr.overrride.game.shooter.session.levels.DefaultLevel
-
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
-    private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
-    private val tree                 = new SynchronizedObjectBehaviorStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
-        behaviors += new SynchronizedObjectBehaviorBuilder[ShooterCharacter]() {
-            annotateAllMethods("damage") and "setWeapon" by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true, procrastinator = lwjglProcrastinator)
+    private val lwjglProcrastinator  = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
+    private val tree                 = new ObjectBehaviorStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
+        behaviors += new ObjectBehaviorBuilder[ShooterCharacter]() {
+            annotateAllMethods("damage") and "setWeapon" and "dash" by new MethodControl(BROADCAST_IF_OWNER, procrastinator = lwjglProcrastinator)
         }
-        behaviors += new SynchronizedObjectBehaviorBuilder[Vector2]() {
-            annotateAllMethods("set") by MethodControl(BROADCAST_IF_OWNER, invokeOnly = true)
+        behaviors += new ObjectBehaviorBuilder[SimpleWeapon]() {
+            annotateAllMethods("shoot") by new MethodControl(BROADCAST_IF_OWNER, procrastinator = lwjglProcrastinator)
+        }
+        behaviors += new ObjectBehaviorBuilder[Vector2]() {
+            annotateAllMethods("set") by new MethodControl(BROADCAST_IF_OWNER)
         }
     }.build
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
-        val center: SynchronizedObjectCenter[GameSession] = connection.runLaterControl {
+        val center: SynchronizedObjectCache[GameSession] = connection.runLaterControl {
             connection
                     .network
                     .globalCache
-                    .attachToCache(51, DefaultSynchronizedObjectCenter[GameSession](tree), CacheSearchBehavior.GET_OR_OPEN)
+                    .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](tree), CacheSearchBehavior.GET_OR_OPEN)
         }.join().get
-        center.getOrPost(0)(new GameSessionImpl(3, new DefaultLevel))
+        center.getOrSynchronize(0)(Constructor[GameSessionImpl](3, new DefaultLevel))
     }
     println("Game Session found !")
     private val background = new Texture("background.png")

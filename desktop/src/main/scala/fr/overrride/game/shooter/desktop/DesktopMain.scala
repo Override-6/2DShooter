@@ -2,28 +2,25 @@ package fr.overrride.game.shooter.desktop
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration, LwjglFileHandle}
 import com.badlogic.gdx.graphics.{Color, Texture}
-import fr.linkit.api.connection.ExternalConnection
-import fr.linkit.api.local.system.AppLogger
+import fr.linkit.api.application.connection.ExternalConnection
+import fr.linkit.api.internal.system.AppLogger
 import fr.linkit.client.ClientApplication
-import fr.linkit.client.local.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
-import fr.linkit.client.local.config.schematic.ScalaClientAppSchematic
-import fr.linkit.engine.connection.packet.persistence.DefaultPacketSerializer
-import fr.linkit.engine.local.utils.NumberSerializer
-import fr.overrride.game.shooter.{GameAdapter, GameConstants}
+import fr.linkit.client.config.schematic.ScalaClientAppSchematic
+import fr.linkit.client.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
 import fr.overrride.game.shooter.api.session.GameSession
-import fr.overrride.game.shooter.desktop.linkit.TexturePersistence
 import fr.overrride.game.shooter.session.GameSessionImpl
+import fr.overrride.game.shooter.{GameAdapter, GameConstants}
 
 import java.net.InetSocketAddress
 import scala.io.StdIn
 
 object DesktopMain {
 
-    val WindowWidth : Int = GameConstants.WINDOW_WIDTH.toInt
-    val WindowHeight: Int = GameConstants.WINDOW_HEIGHT.toInt
-    val GameTitle         = "2DShooter"
-    val Port = 48485
-    val ServerAddress   : InetSocketAddress = new InetSocketAddress("localhost", Port)
+    final val WindowWidth  : Int               = GameConstants.WINDOW_WIDTH.toInt
+    final val WindowHeight : Int               = GameConstants.WINDOW_HEIGHT.toInt
+    final val GameTitle                        = "2DShooter"
+    final val Port                             = 48485
+    final val ServerAddress: InetSocketAddress = new InetSocketAddress("localhost", Port)
 
     def main(arg: Array[String]): Unit = {
         println("Choose client identifier.")
@@ -47,15 +44,13 @@ object DesktopMain {
                 }
             }
         }
-        NumberSerializer.serializeInt(4)
         val client       = ClientApplication.launch(clientConfig, getClass,
             classOf[GameSession],
             classOf[GameSessionImpl],
             classOf[Texture],
             classOf[LwjglFileHandle],
             classOf[Color])
-        val connection = client.getConnection(Port).get
-        handleConnection(connection)
+        val connection   = client.findConnection(Port).get
         AppLogger.info("Linkit client Application started, Starting LwjglApplication...")
         new LwjglApplication(new GameAdapter(connection), config)
         AppLogger.info("LwjglApplication started !")
@@ -64,12 +59,6 @@ object DesktopMain {
             val line = StdIn.readLine()
             if (line == "stop")
                 return
-        }
-    }
-
-    private def handleConnection(connection: ExternalConnection): Unit = {
-        connection.translator.getSerializer match {
-            case _                                   =>
         }
     }
 }

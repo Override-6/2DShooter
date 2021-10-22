@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.FieldControl;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.character.Colorable;
@@ -18,7 +16,7 @@ import java.util.Optional;
 public class RectangleComponent implements Collidable, Colorable {
 
     private final Texture texture = new Texture("componentBase.png");
-    @FieldControl()
+    @Synchronized()
     protected final Vector2 position;
     private Color color;
     private GameSession gameSession;

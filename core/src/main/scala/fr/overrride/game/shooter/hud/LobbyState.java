@@ -1,7 +1,7 @@
 package fr.overrride.game.shooter.hud;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.linkit.api.connection.ExternalConnection;
+import fr.linkit.api.application.connection.ExternalConnection;
 import fr.overrride.game.shooter.api.other.states.ScreenState;
 
 public class LobbyState extends ScreenState {

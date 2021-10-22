@@ -1,8 +1,8 @@
 package fr.overrride.game.shooter
 
-import com.badlogic.gdx.{ApplicationAdapter, Gdx}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import fr.linkit.api.connection.ExternalConnection
+import com.badlogic.gdx.{ApplicationAdapter, Gdx}
+import fr.linkit.api.application.connection.ExternalConnection
 import fr.overrride.game.shooter.api.other.states.GameStateManager
 import fr.overrride.game.shooter.session.PlayState
 

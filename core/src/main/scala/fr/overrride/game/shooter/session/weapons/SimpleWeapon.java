@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.connection.cache.obj.SynchronizedObject;
-import fr.linkit.api.connection.cache.obj.behavior.annotation.MethodControl;
+import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.MethodControl;
 import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Shooter;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.connection.cache.obj.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
+import static fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
 import static fr.overrride.game.shooter.GameConstants.SIZE_DIVIDE;
 
 
@@ -107,7 +107,7 @@ public class SimpleWeapon implements Weapon {
         //no-op
     }
 
-    @MethodControl(value = BROADCAST_IF_OWNER, invokeOnly = true)
+    @MethodControl(value = BROADCAST_IF_OWNER)
     public void setRotation(float angle) {
         rotation = angle % 360;
     }
@@ -126,7 +126,7 @@ public class SimpleWeapon implements Weapon {
         return System.currentTimeMillis() - lastShoot >= fireRate;
     }
 
-    //@MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER, invokeOnly = true)
+    //@MethodControl(value = BasicRemoteInvocationRule.BROADCAST_IF_OWNER)
     public void shoot() {
         if (!canShoot())
             return;
