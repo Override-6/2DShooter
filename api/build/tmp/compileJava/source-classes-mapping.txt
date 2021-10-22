@@ -1,0 +1,67 @@
+main/scala/fr/overrride/game/shooter/api/other/actions/SimpleRestAction.java
+ fr.overrride.game.shooter.api.other.actions.SimpleRestAction
+main/scala/fr/overrride/game/shooter/api/session/character/Controllable.java
+ fr.overrride.game.shooter.api.session.character.Controllable
+main/scala/fr/overrride/game/shooter/api/session/character/KeyType.java
+ fr.overrride.game.shooter.api.session.character.KeyType
+main/scala/fr/overrride/game/shooter/api/session/levels/Level.java
+ fr.overrride.game.shooter.api.session.levels.Level
+main/scala/fr/overrride/game/shooter/api/other/animations/Animable.java
+ fr.overrride.game.shooter.api.other.animations.Animable
+main/scala/fr/overrride/game/shooter/api/other/states/GameStateManager.java
+ fr.overrride.game.shooter.api.other.states.GameStateManager
+main/scala/fr/overrride/game/shooter/api/session/character/Controller.java
+ fr.overrride.game.shooter.api.session.character.Controller
+main/scala/fr/overrride/game/shooter/api/session/character/GameSessionObject.java
+ fr.overrride.game.shooter.api.session.character.GameSessionObject
+ fr.overrride.game.shooter.api.session.character.GameSessionObject$DrawPriority
+main/scala/fr/overrride/game/shooter/api/session/comps/RectangleComponent.java
+ fr.overrride.game.shooter.api.session.comps.RectangleComponent
+main/scala/fr/overrride/game/shooter/api/session/weapon/Bullet.java
+ fr.overrride.game.shooter.api.session.weapon.Bullet
+main/scala/fr/overrride/game/shooter/api/session/character/Collidable.java
+ fr.overrride.game.shooter.api.session.character.Collidable
+main/scala/fr/overrride/game/shooter/api/other/actions/RestActionCompleter.java
+ fr.overrride.game.shooter.api.other.actions.RestActionCompleter
+main/scala/fr/overrride/game/shooter/api/session/ParticleManager.java
+ fr.overrride.game.shooter.api.session.ParticleManager
+main/scala/fr/overrride/game/shooter/api/session/character/Colorable.java
+ fr.overrride.game.shooter.api.session.character.Colorable
+main/scala/fr/overrride/game/shooter/api/session/weapon/Muzzle.java
+ fr.overrride.game.shooter.api.session.weapon.Muzzle
+main/scala/fr/overrride/game/shooter/api/session/character/KeyControl.java
+ fr.overrride.game.shooter.api.session.character.KeyControl
+main/scala/fr/overrride/game/shooter/api/other/actions/SimpleAction.java
+ fr.overrride.game.shooter.api.other.actions.SimpleAction
+main/scala/fr/overrride/game/shooter/api/other/states/ScreenState.java
+ fr.overrride.game.shooter.api.other.states.ScreenState
+main/scala/fr/overrride/game/shooter/api/session/character/Shooter.java
+ fr.overrride.game.shooter.api.session.character.Shooter
+main/scala/fr/overrride/game/shooter/api/other/GraphicComponent.java
+ fr.overrride.game.shooter.api.other.GraphicComponent
+main/scala/fr/overrride/game/shooter/api/other/actions/Action.java
+ fr.overrride.game.shooter.api.other.actions.Action
+main/scala/fr/overrride/game/shooter/api/other/util/MathUtils.java
+ fr.overrride.game.shooter.api.other.util.MathUtils
+main/scala/fr/overrride/game/shooter/api/other/actions/RestAction.java
+ fr.overrride.game.shooter.api.other.actions.RestAction
+main/scala/fr/overrride/game/shooter/api/session/character/Deplacable.java
+ fr.overrride.game.shooter.api.session.character.Deplacable
+main/scala/fr/overrride/game/shooter/api/session/character/LivingEntity.java
+ fr.overrride.game.shooter.api.session.character.LivingEntity
+main/scala/fr/overrride/game/shooter/api/session/character/Character.java
+ fr.overrride.game.shooter.api.session.character.Character
+main/scala/fr/overrride/game/shooter/api/other/animations/Animator.java
+ fr.overrride.game.shooter.api.other.animations.Animator
+main/scala/fr/overrride/game/shooter/api/other/animations/RotationAnimation.java
+ fr.overrride.game.shooter.api.other.animations.RotationAnimation
+main/scala/fr/overrride/game/shooter/api/session/weapon/Weapon.java
+ fr.overrride.game.shooter.api.session.weapon.Weapon
+main/scala/fr/overrride/game/shooter/api/session/GameSession.java
+ fr.overrride.game.shooter.api.session.GameSession
+main/scala/fr/overrride/game/shooter/api/session/abilities/Ability.java
+ fr.overrride.game.shooter.api.session.abilities.Ability
+main/scala/fr/overrride/game/shooter/api/other/actions/ActionCompleter.java
+ fr.overrride.game.shooter.api.other.actions.ActionCompleter
+main/scala/fr/overrride/game/shooter/api/session/character/AxisController.java
+ fr.overrride.game.shooter.api.session.character.AxisController
