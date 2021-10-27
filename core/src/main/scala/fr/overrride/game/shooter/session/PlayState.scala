@@ -8,40 +8,45 @@ import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.application.connection.ExternalConnection
 import fr.linkit.api.gnom.cache.CacheSearchBehavior
 import fr.linkit.api.gnom.cache.sync.SynchronizedObjectCache
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER
 import fr.linkit.api.internal.concurrency.Procrastinator
 import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
-import fr.linkit.engine.gnom.cache.sync.behavior.ObjectBehaviorBuilder.MethodControl
-import fr.linkit.engine.gnom.cache.sync.behavior.{AnnotationBasedMemberBehaviorFactory, ObjectBehaviorBuilder, ObjectBehaviorStoreBuilder}
+import fr.linkit.engine.gnom.cache.sync.behavior.v2.builder.SynchronizedObjectBehaviorFactoryBuilder
+import fr.linkit.engine.gnom.cache.sync.behavior.v2.builder.SynchronizedObjectBehaviorFactoryBuilder.MethodBehaviorBuilder
 import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
 import fr.overrride.game.shooter.GameConstants
-import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
-import fr.overrride.game.shooter.session.levels.DefaultLevel
-import fr.overrride.game.shooter.session.weapons.SimpleWeapon
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.{KeyControl, KeyType}
-import fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER
+import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
+import fr.overrride.game.shooter.session.levels.DefaultLevel
+import fr.overrride.game.shooter.session.weapons.SimpleWeapon
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     private val lwjglProcrastinator  = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
-    private val tree                 = new ObjectBehaviorStoreBuilder(AnnotationBasedMemberBehaviorFactory) {
-        behaviors += new ObjectBehaviorBuilder[ShooterCharacter]() {
-            annotateAllMethods("damage") and "setWeapon" and "dash" by new MethodControl(BROADCAST_IF_OWNER, procrastinator = lwjglProcrastinator)
-        }
-        behaviors += new ObjectBehaviorBuilder[SimpleWeapon]() {
-            annotateAllMethods("shoot") by new MethodControl(BROADCAST_IF_OWNER, procrastinator = lwjglProcrastinator)
-        }
-        behaviors += new ObjectBehaviorBuilder[Vector2]() {
-            annotateAllMethods("set") by new MethodControl(BROADCAST_IF_OWNER)
-        }
-    }.build
+    import fr.linkit.engine.gnom.cache.sync.description.SimpleSyncObjectSuperClassDescription.fromTag
+    private val factory = new SynchronizedObjectBehaviorFactoryBuilder {
+        describe(new ClassDescriptor[ShooterCharacter]() {
+            enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
+                withProcrastinator(lwjglProcrastinator)
+            }
+        })
+        describe(new ClassDescriptor[SimpleWeapon]() {
+            enable method "shoot" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
+                withProcrastinator(lwjglProcrastinator)
+            }
+        })
+        describe(new ClassDescriptor[Vector2]() {
+            enable method "set" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER){}
+        })
+    }.build()
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
         val center: SynchronizedObjectCache[GameSession] = connection.runLaterControl {
             connection
                     .network
                     .globalCache
-                    .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](tree), CacheSearchBehavior.GET_OR_OPEN)
+                    .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](factory), CacheSearchBehavior.GET_OR_OPEN)
         }.join().get
         center.getOrSynchronize(0)(Constructor[GameSessionImpl](3, new DefaultLevel))
     }

@@ -4,7 +4,7 @@
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(initialize, None, None)[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(boot, None, None)[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(writeSbtVersion, None, None)[0m
-[0m[[0m[33mwarn[0m] [0m[0mNo sbt.version set in project/build.properties, base directory: C:\Users\maxim\IdeaProjects\2DShooter[0m
+[0m[[0m[33mwarn[0m] [0m[0mNo sbt.version set in project/build.properties, base directory: C:\Users\Maxime\IdeaProjects\2DShooter[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(reload, None, None)[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(sbtStashOnFailure, None, None)[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(onFailure loadFailed, None, None)[0m
@@ -12,10 +12,10 @@
 [0m[[0m[0minfo[0m] [0m[0mwelcome to sbt 1.5.2 (Oracle Corporation Java 1.8.0_271)[0m
 [0m[[0m[0mdebug[0m] [0m[0m      Load.loadUnit: plugins took 152.321ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m      Load.loadUnit: defsScala took 0.3649ms[0m
-[0m[[0m[0mdebug[0m] [0m[0m[Loading] Scanning directory C:\Users\maxim\.sbt\1.0\plugins[0m
+[0m[[0m[0mdebug[0m] [0m[0m[Loading] Scanning directory C:\Users\Maxime\.sbt\1.0\plugins[0m
 [0m[[0m[0mdebug[0m] [0m[0m        Load.loadUnit: mkEval took 11.2909ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m[Loading] Found non-root projects [0m
-[0m[[0m[0mdebug[0m] [0m[0m[Loading] Done in C:\Users\maxim\.sbt\1.0\plugins, returning: ()[0m
+[0m[[0m[0mdebug[0m] [0m[0m[Loading] Done in C:\Users\Maxime\.sbt\1.0\plugins, returning: ()[0m
 [0m[[0m[0mdebug[0m] [0m[0mdeducing auto plugins based on known facts Set(Atom(sbt.plugins.CorePlugin)) and clauses Clauses(Clause(Atom(sbt.plugins.JvmPlugin),Set(Atom(sbt.plugins.IvyPlugin)))[0m
 [0m[[0m[0mdebug[0m] [0m[0mClause(Atom(sbt.ScriptedPlugin),Set(Atom(sbt.plugins.JvmPlugin)))[0m
 [0m[[0m[0mdebug[0m] [0m[0mClause(Atom(sbt.plugins.SbtPlugin),Set(Atom(sbt.ScriptedPlugin)))[0m
@@ -32,11 +32,11 @@
 [0m[[0m[0mdebug[0m] [0m[0mPlugins.deducer#function took 28.9971 ms[0m
 [0m[[0m[0minfo[0m] [0m[0mloading settings for project global-plugins from android.sbt ...[0m
 [0m[[0m[0mdebug[0m] [0m[0m          Load.resolveProject(global-plugins) took 100.3135ms[0m
-[0m[[0m[0mdebug[0m] [0m[0m        Load.loadTransitive: finalizeProject(Project(id global-plugins, base: C:\Users\maxim\.sbt\1.0\plugins, plugins: List(<none>))) took 168.6349ms[0m
-[0m[[0m[0mdebug[0m] [0m[0m[Loading] Done in C:\Users\maxim\.sbt\1.0\plugins, returning: (global-plugins)[0m
+[0m[[0m[0mdebug[0m] [0m[0m        Load.loadTransitive: finalizeProject(Project(id global-plugins, base: C:\Users\Maxime\.sbt\1.0\plugins, plugins: List(<none>))) took 168.6349ms[0m
+[0m[[0m[0mdebug[0m] [0m[0m[Loading] Done in C:\Users\Maxime\.sbt\1.0\plugins, returning: (global-plugins)[0m
 [0m[[0m[0mdebug[0m] [0m[0m      Load.loadUnit: loadedProjectsRaw took 476.828ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m      Load.loadUnit: cleanEvalClasses took 12.2321ms[0m
-[0m[[0m[0mdebug[0m] [0m[0m    Load.loadUnit(file:/C:/Users/maxim/.sbt/1.0/plugins/, ...) took 650.9607ms[0m
+[0m[[0m[0mdebug[0m] [0m[0m    Load.loadUnit(file:/C:/Users/Maxime/.sbt/1.0/plugins/, ...) took 650.9607ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Load.apply: load took 930.663ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Load.apply: resolveProjects took 11.5504ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Load.apply: finalTransforms took 121.6125ms[0m
@@ -44,7 +44,7 @@
 [0m[[0m[0mdebug[0m] [0m[0m  Load.apply: Def.make(settings)... took 2658.4606ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Load.apply: structureIndex took 463.9587ms[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Load.apply: mkStreams took 3.2141ms[0m
-[0m[[0m[0minfo[0m] [0m[0mloading global plugins from C:\Users\maxim\.sbt\1.0\plugins[0m
+[0m[[0m[0minfo[0m] [0m[0mloading global plugins from C:\Users\Maxime\.sbt\1.0\plugins[0m
 [0m[[0m[0mdebug[0m] [0m[0mRunning task... Cancel: Signal, check cycles: false, forcegc: true[0m
 [0m[[0m[33mwarn[0m] [0m[0m[0m
 [0m[[0m[33mwarn[0m] [0m[0m	Note: Some unresolved dependencies have extra attributes.  Check that these dependencies exist with the requested attributes.[0m
@@ -55,7 +55,7 @@
 [0m[[0m[31merror[0m] [0m[0m  Not found[0m
 [0m[[0m[31merror[0m] [0m[0m  Not found[0m
 [0m[[0m[31merror[0m] [0m[0m  not found: https://repo1.maven.org/maven2/org/scala-android/sbt-android_2.12_1.0/1.7.0/sbt-android-1.7.0.pom[0m
-[0m[[0m[31merror[0m] [0m[0m  not found: C:\Users\maxim\.ivy2\localorg.scala-android\sbt-android\scala_2.12\sbt_1.0\1.7.0\ivys\ivy.xml[0m
+[0m[[0m[31merror[0m] [0m[0m  not found: C:\Users\Maxime\.ivy2\localorg.scala-android\sbt-android\scala_2.12\sbt_1.0\1.7.0\ivys\ivy.xml[0m
 [0m[[0m[31merror[0m] [0m[0m  not found: https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.scala-android/sbt-android/scala_2.12/sbt_1.0/1.7.0/ivys/ivy.xml[0m
 [0m[[0m[31merror[0m] [0m[0m  not found: https://repo.typesafe.com/typesafe/ivy-releases/org.scala-android/sbt-android/scala_2.12/sbt_1.0/1.7.0/ivys/ivy.xml[0m
 [0m[[0m[31merror[0m] [0m[0m	at lmcoursier.CoursierDependencyResolution.unresolvedWarningOrThrow(CoursierDependencyResolution.scala:258)[0m
@@ -92,7 +92,7 @@
 [0m[[0m[31merror[0m] [0m[0m  Not found[0m
 [0m[[0m[31merror[0m] [0m[0m  Not found[0m
 [0m[[0m[31merror[0m] [0m[0m  not found: https://repo1.maven.org/maven2/org/scala-android/sbt-android_2.12_1.0/1.7.0/sbt-android-1.7.0.pom[0m
-[0m[[0m[31merror[0m] [0m[0m  not found: C:\Users\maxim\.ivy2\localorg.scala-android\sbt-android\scala_2.12\sbt_1.0\1.7.0\ivys\ivy.xml[0m
+[0m[[0m[31merror[0m] [0m[0m  not found: C:\Users\Maxime\.ivy2\localorg.scala-android\sbt-android\scala_2.12\sbt_1.0\1.7.0\ivys\ivy.xml[0m
 [0m[[0m[31merror[0m] [0m[0m  not found: https://repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.scala-android/sbt-android/scala_2.12/sbt_1.0/1.7.0/ivys/ivy.xml[0m
 [0m[[0m[31merror[0m] [0m[0m  not found: https://repo.typesafe.com/typesafe/ivy-releases/org.scala-android/sbt-android/scala_2.12/sbt_1.0/1.7.0/ivys/ivy.xml[0m
 [0m[[0m[0mdebug[0m] [0m[0m> Exec(loadFailed, None, None)[0m
