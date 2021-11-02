@@ -24,6 +24,7 @@ import static fr.overrride.game.shooter.GameConstants.SIZE_DIVIDE;
 public class SimpleWeapon implements Weapon {
 
     private final Texture texture;
+    @Synchronized
     private Shooter owner;
     private final Muzzle muzzle;
     private float rotation = 0;
@@ -33,14 +34,14 @@ public class SimpleWeapon implements Weapon {
 
     private double lastShoot = 0;
 
-    public SimpleWeapon(Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
+    public SimpleWeapon(@Synchronized Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
         this.owner = owner;
         this.texture = texture;
         this.fireRate = fireRate;
         this.muzzle = muzzle;
     }
 
-    public SimpleWeapon(Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
+    public SimpleWeapon(@Synchronized Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
         this(owner, new Texture(Gdx.files.internal(texturePath)), fireRate, muzzle);
     }
 
