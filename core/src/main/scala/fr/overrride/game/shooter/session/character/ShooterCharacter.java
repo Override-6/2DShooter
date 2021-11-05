@@ -31,6 +31,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
 
     @Synchronized
     private Weapon weapon;
+    @Synchronized
     private transient Controller<Character> controller = null;
     private GameSession session = null;
     private final AxisController axisController;

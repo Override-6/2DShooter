@@ -43,7 +43,7 @@ public class GameSessionImpl implements GameSession {
     @MethodControl(value = BasicInvocationRule.BROADCAST)
     public void addCharacter(@Synchronized Character character) {
         if (players.size() > maxPlayers)
-            throw new IllegalArgumentException("player limit reached !");
+            throw new IllegalArgumentException("Player limit reached !");
 
         character.setGameSession(this);
         players.add(character);

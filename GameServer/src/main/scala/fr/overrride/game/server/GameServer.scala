@@ -8,6 +8,7 @@ import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
+import fr.overrride.game.shooter.GameAdapter
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.GameSessionImpl
 
@@ -27,6 +28,7 @@ object GameServer {
                 servers += new ServerConnectionConfigBuilder {
                     override val identifier: String = ServerName
                     override val port      : Int    = Port
+                    defaultPersistenceConfigScript = Some(classOf[GameAdapter].getResource("/libgdx_persistence_config.sc"))
                 }
             }
         }

@@ -24,6 +24,7 @@ import fr.overrride.game.shooter.session.weapons.SimpleWeapon
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     private val lwjglProcrastinator  = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
+    lwjglProcrastinator.runLater(println("Test wtffff"))
     import fr.linkit.engine.gnom.cache.sync.description.SimpleSyncObjectSuperClassDescription.fromTag
     private val factory = new SynchronizedObjectBehaviorFactoryBuilder {
         describe(new ClassDescriptor[ShooterCharacter]() {
@@ -40,7 +41,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
             enable method "set" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER){}
         })
     }.build()
-    private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
+    private lazy val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
         val center: SynchronizedObjectCache[GameSession] = connection.runLaterControl {
             connection
@@ -55,7 +56,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     createPlayers()
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
-    private def createPlayers(): Unit = {
+    private def createPlayers(): Unit = lwjglProcrastinator.runLater {
         val player1    = new ShooterCharacter(500 + (session.countPlayers() * 100), 75, Color.GREEN)
         val controller = new CharacterController(player1)
         controller.addKeyControl(KeyControl.of(KeyType.DASH, A, _.dash()))
