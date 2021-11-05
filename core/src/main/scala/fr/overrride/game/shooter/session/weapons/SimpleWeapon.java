@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
 import fr.linkit.api.gnom.cache.sync.behavior.annotation.MethodControl;
+import fr.linkit.api.gnom.cache.sync.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Shooter;

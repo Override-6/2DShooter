@@ -29,6 +29,7 @@ import static fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationR
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
 
+    @Synchronized
     private Weapon weapon;
     private transient Controller<Character> controller = null;
     private GameSession session = null;
