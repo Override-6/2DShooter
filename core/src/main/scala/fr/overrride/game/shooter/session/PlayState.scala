@@ -13,50 +13,31 @@ import fr.linkit.api.internal.concurrency.Procrastinator
 import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
 import fr.linkit.engine.gnom.cache.sync.behavior.v2.builder.SynchronizedObjectBehaviorFactoryBuilder
 import fr.linkit.engine.gnom.cache.sync.behavior.v2.builder.SynchronizedObjectBehaviorFactoryBuilder.MethodBehaviorBuilder
+import fr.linkit.engine.gnom.cache.sync.description.SimpleSyncObjectSuperClassDescription.fromTag
 import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.{KeyControl, KeyType}
+import fr.overrride.game.shooter.session.PlayState.gameSessionBehavior
 import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
 import fr.overrride.game.shooter.session.levels.DefaultLevel
 import fr.overrride.game.shooter.session.weapons.SimpleWeapon
+
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
-    private val lwjglProcrastinator  = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
-    lwjglProcrastinator.runLater(println("Test wtffff"))
-    import fr.linkit.engine.gnom.cache.sync.description.SimpleSyncObjectSuperClassDescription.fromTag
-    private val factory = new SynchronizedObjectBehaviorFactoryBuilder {
-        describe(new ClassDescriptor[ShooterCharacter]() {
-            enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
-                withProcrastinator(lwjglProcrastinator)
-            }
-        })
-        describe(new ClassDescriptor[SimpleWeapon]() {
-            enable method "shoot" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
-                withProcrastinator(lwjglProcrastinator)
-            }
-        })
-        describe(new ClassDescriptor[Vector2]() {
-            enable method "set" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER){}
-        })
-    }.build()
     private lazy val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
-        //val test = SimplePuppetClassDescription(classOf[GameSessionImpl])
-        val center: SynchronizedObjectCache[GameSession] = connection.runLaterControl {
-            connection
-                    .network
-                    .globalCache
-                    .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](factory), CacheSearchBehavior.GET_OR_OPEN)
-        }.join().get
+        val center: SynchronizedObjectCache[GameSession] = connection
+                .network
+                .globalCache
+                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
         center.getOrSynchronize(0)(Constructor[GameSessionImpl](3, new DefaultLevel))
     }
-    println("Game Session found !")
-    private val background = new Texture("background.png")
+    private      val background           = new Texture("background.png")
     createPlayers()
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
-    private def createPlayers(): Unit = lwjglProcrastinator.runLater {
+    private def createPlayers(): Unit = {
         val player1    = new ShooterCharacter(500 + (session.countPlayers() * 100), 75, Color.GREEN)
         val controller = new CharacterController(player1)
         controller.addKeyControl(KeyControl.of(KeyType.DASH, A, _.dash()))
@@ -91,4 +72,24 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         session.disposeScene()
         background.dispose()
     }
+}
+
+object PlayState {
+
+    private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
+    final   val gameSessionBehavior = new SynchronizedObjectBehaviorFactoryBuilder {
+        describe(new ClassDescriptor[ShooterCharacter]() {
+            enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
+                withProcrastinator(lwjglProcrastinator)
+            }
+        })
+        describe(new ClassDescriptor[SimpleWeapon]() {
+            enable method "shoot" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
+                withProcrastinator(lwjglProcrastinator)
+            }
+        })
+        describe(new ClassDescriptor[Vector2]() {
+            enable method "set" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {}
+        })
+    }.build()
 }

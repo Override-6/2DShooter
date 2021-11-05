@@ -10,7 +10,7 @@ import fr.linkit.server.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
 import fr.overrride.game.shooter.GameAdapter
 import fr.overrride.game.shooter.api.session.GameSession
-import fr.overrride.game.shooter.session.GameSessionImpl
+import fr.overrride.game.shooter.session.{GameSessionImpl, PlayState}
 
 import scala.io.StdIn
 
@@ -42,7 +42,7 @@ object GameServer {
         val cache               = connection
                 .network
                 .globalCache
-                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](), CacheSearchBehavior.GET_OR_OPEN)
+                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
 
         val config = new LwjglApplicationConfiguration
