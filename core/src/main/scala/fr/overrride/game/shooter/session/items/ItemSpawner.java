@@ -45,7 +45,6 @@ public class ItemSpawner implements GameSessionObject {
         currentSpawnRate += life + afterSpawnSleep;
         Item item = new Item(location.x, location.y, life, type);
         item.setGameSession(gameSession);
-
     }
 
     private void defineNewSpawnRate() {

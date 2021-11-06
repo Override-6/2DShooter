@@ -57,6 +57,7 @@ object GameServer {
 
         while (true) {
             val line = StdIn.readLine()
+            //val t = GLContext.getCapabilities
             if (line == "stop")
                 return
         }

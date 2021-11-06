@@ -31,10 +31,11 @@ public class Dash implements Ability {
         lastUse = System.currentTimeMillis();
         isUsing = true;
 
+        Vector2 location = character.getLocation();
         character.getCurrentGameSession()
                 .ifPresent(gameSession -> currentEffect = gameSession
                         .getParticleManager()
-                        .playEffect("particles/dash.party", character.getLocation(), character.getColor())
+                        .playEffect("particles/dash.party", location, character.getColor())
                         .get());
 
         character.getAxisController().blockYAxisFor(750)

@@ -56,7 +56,7 @@ public class SimpleWeapon implements Weapon {
             int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
             int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
             int rotation = (int) MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13);
-            if ((int) this.rotation != rotation)
+            if ((int) this.rotation != rotation && !muzzle.isPlayingRecoilAnimation())
                 setRotation(rotation);
         }
         muzzle.update(dt);
@@ -134,7 +134,6 @@ public class SimpleWeapon implements Weapon {
             return;
         Vector2 direction = new Vector2(0, 1);
         direction.rotate(rotation - 90);
-
         muzzle.fire(direction, this);
         lastShoot = System.currentTimeMillis();
     }
@@ -163,6 +162,11 @@ public class SimpleWeapon implements Weapon {
             @Override
             public void update(float deltaTime) {
 
+            }
+
+            @Override
+            public boolean isPlayingRecoilAnimation() {
+                return false;
             }
         });
     }

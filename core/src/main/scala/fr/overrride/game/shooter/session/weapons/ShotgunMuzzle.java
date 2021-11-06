@@ -11,7 +11,11 @@ import org.jetbrains.annotations.Nullable;
 public class ShotgunMuzzle implements Muzzle {
 
     @Nullable
-    private Animator shootAnimation;
+    private transient Animator shootAnimator;
+    @Override
+    public boolean isPlayingRecoilAnimation() {
+        return shootAnimator != null;
+    }
 
     @Override
     public void fire(Vector2 direction, Weapon weapon) {
@@ -23,17 +27,17 @@ public class ShotgunMuzzle implements Muzzle {
     }
 
     private void makeShootAnimations(Vector2 direction, Weapon weapon) {
-        this.shootAnimation = new RotationAnimation(weapon, weapon.getRotation(), weapon.getRotation() + 45, 350);
-        shootAnimation.play()
-                .then(() -> shootAnimation.playReverse()
-                        .then(() -> shootAnimation = null));
+        this.shootAnimator = new RotationAnimation(weapon, weapon.getRotation(), weapon.getRotation() + 45, 350);
+        shootAnimator.play()
+                .then(() -> shootAnimator.playReverse()
+                        .then(() -> shootAnimator = null));
         Vector2 ownerVel = weapon.getOwner().getVelocity();
         ownerVel.set(-direction.x, -direction.y);
     }
 
     @Override
     public void update(float deltaTime) {
-        if (shootAnimation != null)
-            shootAnimation.update(deltaTime);
+        if (shootAnimator != null)
+            shootAnimator.update(deltaTime);
     }
 }

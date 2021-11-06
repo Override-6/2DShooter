@@ -26,14 +26,16 @@ import fr.overrride.game.shooter.session.weapons.SimpleWeapon
 
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
-    private lazy val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
+    private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         val center: SynchronizedObjectCache[GameSession] = connection
                 .network
                 .globalCache
                 .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
-        center.getOrSynchronize(0)(Constructor[GameSessionImpl](3, new DefaultLevel))
+        val value                                        = center.getOrSynchronize(0)(Constructor[GameSessionImpl](3, new DefaultLevel))
+        //value.setCurrentLevel(new DefaultLevel)
+        value
     }
-    private      val background           = new Texture("background.png")
+    private val background           = new Texture("background.png")
     createPlayers()
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
@@ -76,20 +78,28 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 
 object PlayState {
 
-    private val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable(Gdx.app.postRunnable)
+    final val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable({ runnable =>
+        if (Gdx.app == null) runnable.run() //run in the current thread
+        Gdx.app.postRunnable(runnable)
+    })
     final   val gameSessionBehavior = new SynchronizedObjectBehaviorFactoryBuilder {
         describe(new ClassDescriptor[ShooterCharacter]() {
             enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
+                withProcrastinator(lwjglProcrastinator)
+            }
+            enable method "makeWalkingEffect" as new MethodBehaviorBuilder(agreement => agreement.acceptAll().discard("GameServer")) {
                 withProcrastinator(lwjglProcrastinator)
             }
         })
         describe(new ClassDescriptor[SimpleWeapon]() {
             enable method "shoot" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
                 withProcrastinator(lwjglProcrastinator)
+                usesInnerInvocations()
             }
         })
         describe(new ClassDescriptor[Vector2]() {
             enable method "set" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {}
         })
     }.build()
+
 }

@@ -41,6 +41,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     private boolean isOnGround = false;
     private final Vector2 velocity, lastPosition, lastVelocity;
 
+    @Synchronized
     private final Ability dash;
 
     public static final float GRAVITY = 100;
@@ -66,12 +67,13 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     @Override
     public void update(float deltaTime) {
         SynchronizedObject<ShooterCharacter> thisWrapper = (SynchronizedObject<ShooterCharacter>) this;
-        if (((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y))) {
+        boolean moved = ((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y));
+        if (moved && thisWrapper.isOwnedByCurrent()) {
             position.set(position.x, position.y); //refreshing remote positions
         }
-        lastPosition.set(position);
-        lastVelocity.set(velocity);
         if (thisWrapper.isOwnedByCurrent()) {
+            lastPosition.set(position);
+            lastVelocity.set(velocity);
             handleFriction();
             handleVelocity(deltaTime);
             axisController.update(deltaTime);
@@ -370,8 +372,11 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
             return;
         boolean isBackward = velocity.x < 0;
         float x = isBackward ? position.x + width : position.x;
+        makeWalkingEffect(x);
+    }
+
+    protected void makeWalkingEffect(float x) {
         session.getParticleManager()
                 .playEffect("particles/walk.party", x, position.y, getColor());
     }
-
 }

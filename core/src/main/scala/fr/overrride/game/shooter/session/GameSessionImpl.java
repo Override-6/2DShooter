@@ -26,7 +26,8 @@ public class GameSessionImpl implements GameSession {
 
     public GameSessionImpl(int maxPlayers, Level level) {
         this.maxPlayers = maxPlayers;
-        setCurrentLevel(level);
+        if (level != null)
+            setCurrentLevel(level);
     }
 
     @Override

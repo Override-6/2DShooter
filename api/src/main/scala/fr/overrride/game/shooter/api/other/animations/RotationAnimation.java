@@ -1,8 +1,10 @@
 package fr.overrride.game.shooter.api.other.animations;
 
+import fr.linkit.api.gnom.cache.sync.invokation.InvocationChoreographer$;
 import fr.overrride.game.shooter.api.other.actions.Action;
 import fr.overrride.game.shooter.api.other.actions.ActionCompleter;
 import fr.overrride.game.shooter.api.other.actions.SimpleAction;
+import scala.runtime.BoxedUnit;
 
 public class RotationAnimation implements Animator {
 
@@ -29,29 +31,33 @@ public class RotationAnimation implements Animator {
 
     @Override
     public void stepForward(float deltaTime) {
-        float toSub = (from - to) / (deltaTime * millis);
-        current -= toSub;
+        runLocally(() -> {
+            float toSub = (from - to) / (deltaTime * millis);
+            current -= toSub;
 
-        if (current >= to) {
-            current = to;
-            state = 0;
-        } else state = 1;
+            if (current >= to) {
+                current = to;
+                state = 0;
+            } else state = 1;
 
-        animated.setRotation(current);
+            animated.setRotation(current);
+        });
     }
 
     @Override
     public void stepBackward(float deltaTime) {
-        float toAdd = (from - to) / (deltaTime * millis);
+        runLocally(() -> {
+            float toAdd = (from - to) / (deltaTime * millis);
 
-        current += toAdd;
+            current += toAdd;
 
-        if (current <= from) {
-            current = from;
-            state = 0;
-        } else state = -1;
+            if (current <= from) {
+                current = from;
+                state = 0;
+            } else state = -1;
 
-        animated.setRotation(current);
+            animated.setRotation(current);
+        });
     }
 
     @Override
@@ -103,10 +109,19 @@ public class RotationAnimation implements Animator {
                 return;
             case 0:
                 if (currentAction != null) {
+                    ActionCompleter a = currentAction;
                     currentAction.onActionCompleted();
-                    currentAction = null;
+                    if (a == currentAction)
+                        currentAction = null;
                 }
         }
+    }
+
+    private void runLocally(Runnable action) {
+        InvocationChoreographer$.MODULE$.forceLocalInvocation(() -> {
+            action.run();
+            return BoxedUnit.UNIT;
+        });
     }
 
 }

@@ -8,4 +8,6 @@ public interface Muzzle {
 
     void update(float deltaTime);
 
+    boolean isPlayingRecoilAnimation();
+
 }
