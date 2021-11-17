@@ -1,5 +1,7 @@
 package fr.overrride.game.shooter.api.session.character;
 
+import fr.overrride.game.shooter.api.session.GameSessionObject;
+
 public interface Controllable<T extends Controllable<T>> extends GameSessionObject, Shooter, Deplacable {
 
     Controller<T> getController();

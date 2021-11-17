@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import fr.overrride.game.shooter.api.session.character.Collidable;
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -2,6 +2,7 @@ package fr.overrride.game.shooter.api.session.character;
 
 
 import com.badlogic.gdx.math.Rectangle;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
 
 public interface Collidable extends GameSessionObject {
 

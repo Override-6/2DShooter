@@ -41,7 +41,7 @@ object DesktopMain {
                 clients += new ClientConnectionConfigBuilder {
                     override val identifier   : String            = clientIdentifier
                     override val remoteAddress: InetSocketAddress = ServerAddress
-                    defaultPersistenceConfigScript = Some(classOf[GameAdapter].getResource("/libgdx_persistence_config.sc"))
+                    defaultPersistenceConfigScript = Some(getClass.getResource("/libgdx_persistence_config_client.sc"))
                 }
             }
         }

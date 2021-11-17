@@ -1,7 +1,6 @@
 package fr.overrride.game.shooter.api.session;
 
 import fr.overrride.game.shooter.api.session.character.Character;
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
 import fr.overrride.game.shooter.api.session.levels.Level;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

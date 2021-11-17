@@ -1,8 +1,7 @@
-package fr.overrride.game.shooter.api.session.character;
+package fr.overrride.game.shooter.api.session;
 
 import com.badlogic.gdx.math.Vector2;
 import fr.overrride.game.shooter.api.other.GraphicComponent;
-import fr.overrride.game.shooter.api.session.GameSession;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

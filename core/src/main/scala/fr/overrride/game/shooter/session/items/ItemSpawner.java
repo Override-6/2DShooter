@@ -2,8 +2,11 @@ package fr.overrride.game.shooter.session.items;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import fr.linkit.api.gnom.reference.NetworkObjectReference;
+import fr.linkit.api.gnom.reference.StaticNetworkObject;
 import fr.overrride.game.shooter.api.session.GameSession;
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
+import fr.overrride.game.shooter.session.GameSessionObjectReference;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

@@ -23,7 +23,6 @@ public class PistolMuzzle implements Muzzle {
 
     @Override
     public void fire(Vector2 direction, Weapon weapon) {
-        System.out.println("Shooting at direction : " + direction);
         Bullet.create(weapon.getOwner(), weapon.getLocation(), direction.scl(1500), 15, 5.5F);
         makeShootAnimation(direction, weapon);
     }

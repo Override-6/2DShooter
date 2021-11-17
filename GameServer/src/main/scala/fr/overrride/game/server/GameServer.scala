@@ -28,7 +28,7 @@ object GameServer {
                 servers += new ServerConnectionConfigBuilder {
                     override val identifier: String = ServerName
                     override val port      : Int    = Port
-                    defaultPersistenceConfigScript = Some(classOf[GameAdapter].getResource("/libgdx_persistence_config.sc"))
+                    defaultPersistenceConfigScript = Some(getClass.getResource("/libgdx_persistence_config_server.sc"))
                 }
             }
         }
@@ -45,7 +45,7 @@ object GameServer {
                 .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
         AppLogger.info(s"Server Application launched on port $Port.")
 
-        val config = new LwjglApplicationConfiguration
+        /*val config = new LwjglApplicationConfiguration
         config.width = 100
         config.height = 15
         config.x = 0
@@ -53,7 +53,7 @@ object GameServer {
         config.title = "GameServer"
         config.foregroundFPS = -1
         config.backgroundFPS = -1
-        new LwjglApplication(new DumbApplicationAdapter, config)
+        new LwjglApplication(new DumbApplicationAdapter, config)*/
 
         while (true) {
             val line = StdIn.readLine()

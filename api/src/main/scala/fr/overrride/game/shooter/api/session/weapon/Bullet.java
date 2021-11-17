@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import fr.overrride.game.shooter.api.session.GameSession;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
 import fr.overrride.game.shooter.api.session.character.*;
 import fr.overrride.game.shooter.api.session.comps.RectangleComponent;
 import org.jetbrains.annotations.Nullable;

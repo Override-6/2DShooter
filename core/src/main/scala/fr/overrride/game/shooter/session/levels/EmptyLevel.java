@@ -1,6 +1,6 @@
 package fr.overrride.game.shooter.session.levels;
 
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
 import fr.overrride.game.shooter.api.session.levels.Level;
 
 import java.util.HashSet;

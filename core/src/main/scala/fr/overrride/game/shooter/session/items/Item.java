@@ -10,7 +10,7 @@ import fr.overrride.game.shooter.api.other.animations.Animator;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.character.Shooter;
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

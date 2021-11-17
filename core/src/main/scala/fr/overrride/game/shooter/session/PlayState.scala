@@ -80,7 +80,7 @@ object PlayState {
 
     final val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable({ runnable =>
         if (Gdx.app == null) runnable.run() //run in the current thread
-        Gdx.app.postRunnable(runnable)
+        else Gdx.app.postRunnable(runnable)
     })
     final   val gameSessionBehavior = new SynchronizedObjectBehaviorFactoryBuilder {
         describe(new ClassDescriptor[ShooterCharacter]() {

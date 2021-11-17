@@ -9,7 +9,7 @@ import fr.overrride.game.shooter.api.session.ParticleManager;
 import fr.overrride.game.shooter.api.session.character.Character;
 import fr.overrride.game.shooter.api.session.character.Controllable;
 import fr.overrride.game.shooter.api.session.character.Controller;
-import fr.overrride.game.shooter.api.session.character.GameSessionObject;
+import fr.overrride.game.shooter.api.session.GameSessionObject;
 import fr.overrride.game.shooter.api.session.levels.Level;
 
 import java.util.HashSet;
@@ -70,6 +70,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
+    @MethodControl(value = BasicInvocationRule.BROADCAST_IF_ROOT_OWNER)
     public void addObject(GameSessionObject object) {
         sceneManager.addObject(object);
     }
@@ -80,7 +81,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    //@MethodControl(value = BasicInvocationRule.BROADCAST)
+    @MethodControl(value = BasicInvocationRule.BROADCAST)
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);
