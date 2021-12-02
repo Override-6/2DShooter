@@ -68,14 +68,6 @@ public abstract class Level implements GameSessionObject {
         return new Vector2();
     }
 
-    protected void addComponent(GameSessionObject component) {
-        components.add(component);
-    }
-
-    protected void removeComponent(GameSessionObject component) {
-        components.remove(component);
-    }
-
     protected abstract Set<GameSessionObject> buildLevel();
 
     protected abstract void onUpdate(float deltaTime);

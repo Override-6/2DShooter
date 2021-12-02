@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
-import fr.linkit.api.gnom.cache.sync.behavior.annotation.MethodControl;
-import fr.linkit.api.gnom.cache.sync.behavior.annotation.Synchronized;
+import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.MethodControl;
+import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
@@ -19,12 +19,13 @@ import fr.overrride.game.shooter.api.session.weapon.Bullet;
 import fr.overrride.game.shooter.api.session.weapon.Weapon;
 import fr.overrride.game.shooter.session.abilities.Dash;
 import fr.overrride.game.shooter.session.components.ProgressBar;
+import fr.overrride.game.shooter.session.items.ItemType;
 import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.gnom.cache.sync.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
+import static fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
 
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
@@ -55,7 +56,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     public ShooterCharacter(float x, float y, Color color) {
         super(x, y, PLAYER_DIM, PLAYER_DIM, color);
 
-        weapon = SimpleWeapon.empty(this);
+        weapon = ItemType.SHOTGUN.asWeapon(this);
         velocity = new Vector2();
         lastPosition = new Vector2(position);
         lastVelocity = new Vector2();

@@ -3,6 +3,7 @@ package fr.overrride.game.shooter.session;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
 import fr.overrride.game.shooter.api.session.character.Collidable;
 import fr.overrride.game.shooter.api.session.GameSessionObject;
 
@@ -15,7 +16,7 @@ public class SceneManager {
 
     //   private final Set<GameSessionObject> objects = new TreeSet<>();
     //FIXME some objects does not get removed with a TreeSet
-    private final Set<GameSessionObject> objects = new HashSet<>();
+    private final List<GameSessionObject> objects = new ArrayList<>();
 
     private CyclickTask currentTask = CyclickTask.NOTHING;
 
@@ -30,6 +31,7 @@ public class SceneManager {
         objects.remove(object);
         object.setGameSession(null);
     }
+
 
     public void update(float deltaTime) {
         currentTask = CyclickTask.UPDATING;
