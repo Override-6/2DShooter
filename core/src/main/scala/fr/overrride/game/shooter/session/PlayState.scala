@@ -27,9 +27,9 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         val center: SynchronizedObjectCache[GameSession] = connection
-                .network
-                .globalCache
-                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
+            .network
+            .globalCache
+            .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
         center.findObject(0).get
     }
     private val background           = new Texture("background.png")
@@ -82,11 +82,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 
 object PlayState {
 
-    final val lwjglProcrastinator = Procrastinator.wrapSubmitterRunnable({ runnable =>
-        if (Gdx.app == null) runnable.run() //run in the current thread
-        else Gdx.app.postRunnable(runnable)
-    })
-    final val gameSessionBehavior = new SynchronizedObjectBehaviorFactoryBuilder {
+    final var lwjglProcrastinator: Procrastinator = _
+    final val gameSessionBehavior                 = new SynchronizedObjectBehaviorFactoryBuilder {
         describe(new ClassDescriptor[ShooterCharacter]() {
             enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
                 withProcrastinator(lwjglProcrastinator)

@@ -7,8 +7,8 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project.name = appName + "-api"
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\API\\build\\libs')
-    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\Engine\\build\\libs')
+    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\Maxime\\IdeaProjects\\Linkit\\API\\build\\libs')
+    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\Maxime\\IdeaProjects\\Linkit\\Engine\\build\\libs')
     implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.6'
     implementation group: 'org.scala-lang', name: 'scala-reflect', version: '2.13.6'
 }
