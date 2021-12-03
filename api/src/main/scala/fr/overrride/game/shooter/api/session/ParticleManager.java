@@ -7,8 +7,6 @@ import fr.overrride.game.shooter.api.other.GraphicComponent;
 import fr.overrride.game.shooter.api.other.actions.RestAction;
 
 public interface ParticleManager extends GraphicComponent {
-
-
     RestAction<ParticleEffect> playEffect(String file, Vector2 position);
 
     RestAction<ParticleEffect> playEffect(String file, Vector2 position, Color tint);

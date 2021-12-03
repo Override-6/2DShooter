@@ -377,6 +377,8 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     protected void makeWalkingEffect(float x) {
+        if (session == null)
+            return;
         session.getParticleManager()
                 .playEffect("particles/walk.party", x, position.y, getColor());
     }

@@ -1,6 +1,5 @@
 package fr.overrride.game.shooter.session
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
@@ -9,11 +8,11 @@ import fr.linkit.api.application.connection.ExternalConnection
 import fr.linkit.api.gnom.cache.CacheSearchBehavior
 import fr.linkit.api.gnom.cache.sync.SynchronizedObjectCache
 import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER
-import fr.linkit.api.internal.concurrency.Procrastinator
 import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
 import fr.linkit.engine.gnom.cache.sync.contract.behavior.builder.SynchronizedObjectBehaviorFactoryBuilder
 import fr.linkit.engine.gnom.cache.sync.contract.behavior.builder.SynchronizedObjectBehaviorFactoryBuilder.MethodBehaviorBuilder
 import fr.linkit.engine.gnom.cache.sync.contract.description.SyncObjectDescription.fromTag
+import fr.linkit.engine.internal.concurrency.pool.HiringBusyWorkerPool
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
@@ -27,9 +26,9 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel) else {
         val center: SynchronizedObjectCache[GameSession] = connection
-            .network
-            .globalCache
-            .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
+                .network
+                .globalCache
+                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
         center.findObject(0).get
     }
     private val background           = new Texture("background.png")
@@ -49,7 +48,6 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         player1.setController(controller)
         player1.setGameSession(session)
         session.addCharacter(player1)
-
     }
 
     private def switchToPerformant(): Unit = {
@@ -82,8 +80,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 
 object PlayState {
 
-    final var lwjglProcrastinator: Procrastinator = _
-    final val gameSessionBehavior                 = new SynchronizedObjectBehaviorFactoryBuilder {
+    final var lwjglProcrastinator: HiringBusyWorkerPool = _
+    final lazy val gameSessionBehavior                  = new SynchronizedObjectBehaviorFactoryBuilder {
         describe(new ClassDescriptor[ShooterCharacter]() {
             enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
                 withProcrastinator(lwjglProcrastinator)

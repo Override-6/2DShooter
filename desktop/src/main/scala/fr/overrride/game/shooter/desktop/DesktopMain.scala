@@ -23,9 +23,11 @@ object DesktopMain {
     final val ServerAddress: InetSocketAddress = new InetSocketAddress("localhost", Port)
 
     def main(arg: Array[String]): Unit = {
+
         println("Choose client identifier.")
         print(" > ")
         val clientIdentifier = StdIn.readLine()
+
 
         val config = new LwjglApplicationConfiguration
         config.width = WindowWidth

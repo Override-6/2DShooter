@@ -15,15 +15,14 @@ class GameAdapter(val serverConnection: ExternalConnection) extends ApplicationA
     override def create(): Unit = {
         val pool = new HiringBusyWorkerPool("LWJGL Pool")
         PlayState.lwjglProcrastinator = pool
-        pool.runLater {
-            manager.push(new PlayState(serverConnection))
-            batch = new SpriteBatch
-        }
         pool.hireCurrentThread()
+        manager.push(new PlayState(serverConnection))
+        batch = new SpriteBatch
         Gdx.app
     }
 
     override def render(): Unit = {
+        PlayState.lwjglProcrastinator.executeRemainingTasks()
         manager.update(Gdx.graphics.getDeltaTime)
         manager.render(batch)
     }
