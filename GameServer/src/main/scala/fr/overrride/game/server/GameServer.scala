@@ -1,6 +1,6 @@
 package fr.overrride.game.server
 
-import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration, LwjglFileHandle}
+import com.badlogic.gdx.backends.lwjgl.LwjglFileHandle
 import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.gnom.cache.CacheSearchBehavior
 import fr.linkit.api.internal.system.AppLogger
@@ -9,7 +9,6 @@ import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
-import fr.overrride.game.shooter.GameAdapter
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.session.levels.DefaultLevel
 import fr.overrride.game.shooter.session.{GameSessionImpl, PlayState}
@@ -41,11 +40,15 @@ object GameServer {
             classOf[LwjglFileHandle],
             classOf[Color])
         val connection          = serverApp.findConnection(Port).get
-        val cache               = connection
-                .network
-                .globalCache
-                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
-        val gameSession = cache.syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel))
+        val traffic             = connection.traffic
+        val global              = connection.network.globalCache
+        val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
+
+        val gameSession         = cache
+                .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, ServerSideParticleManager))
+        val col = traffic.defaultPersistenceConfig.contextualObjectLinker
+        col += (700, gameSession.getParticleManager)
+        global.setCacheChannelToPerformant(51)
         AppLogger.info(s"Server Application launched on port $Port.")
 
         /*val config = new LwjglApplicationConfiguration

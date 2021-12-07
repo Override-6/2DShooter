@@ -2,7 +2,7 @@ package fr.overrride.game.shooter.desktop
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration, LwjglFileHandle}
 import com.badlogic.gdx.graphics.{Color, Texture}
-import fr.linkit.api.application.connection.ExternalConnection
+
 import fr.linkit.api.internal.system.AppLogger
 import fr.linkit.client.ClientApplication
 import fr.linkit.client.config.schematic.ScalaClientAppSchematic

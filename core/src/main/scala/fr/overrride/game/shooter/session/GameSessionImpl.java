@@ -20,12 +20,13 @@ public class GameSessionImpl implements GameSession {
     private final Set<Controllable<?>> players = new HashSet<>();
 
     private final SceneManager sceneManager = new SceneManager();
-    private final ParticleManager particleManager = new ParticleManagerImpl();
+    private final ParticleManager particleManager;
     private final int maxPlayers;
     private Level level;
 
-    public GameSessionImpl(int maxPlayers, Level level) {
+    public GameSessionImpl(int maxPlayers, Level level, ParticleManager particleManager) {
         this.maxPlayers = maxPlayers;
+        this.particleManager = particleManager;
         if (level != null)
             setCurrentLevel(level);
     }

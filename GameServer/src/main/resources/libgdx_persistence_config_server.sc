@@ -10,4 +10,3 @@ val traffic: PacketTraffic            = null
 import builder._
 //ENd Of Context
 setTConverter[Texture, String](_.toString)(new Texture(_))
-
