@@ -46,8 +46,8 @@ APP_BASE_NAME=`basename "$0"`
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
 
-# Use the Maximeeum available, or set MAX_FD != -1 to use that value.
-MAX_FD="Maximeeum"
+# Use the Maximeum available, or set MAX_FD != -1 to use that value.
+MAX_FD="Maximeum"
 
 warn () {
     echo "$*"
@@ -105,19 +105,19 @@ Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
 
-# Increase the Maximeeum file descriptors if we can.
+# Increase the Maximeum file descriptors if we can.
 if [ "$cygwin" = "false" -a "$darwin" = "false" -a "$nonstop" = "false" ] ; then
     MAX_FD_LIMIT=`ulimit -H -n`
     if [ $? -eq 0 ] ; then
-        if [ "$MAX_FD" = "Maximeeum" -o "$MAX_FD" = "max" ] ; then
+        if [ "$MAX_FD" = "Maximeum" -o "$MAX_FD" = "max" ] ; then
             MAX_FD="$MAX_FD_LIMIT"
         fi
         ulimit -n $MAX_FD
         if [ $? -ne 0 ] ; then
-            warn "Could not set Maximeeum file descriptor limit: $MAX_FD"
+            warn "Could not set Maximeum file descriptor limit: $MAX_FD"
         fi
     else
-        warn "Could not query Maximeeum file descriptor limit: $MAX_FD_LIMIT"
+        warn "Could not query Maximeum file descriptor limit: $MAX_FD_LIMIT"
     fi
 fi
 
@@ -130,7 +130,7 @@ fi
 if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
     APP_HOME=`cygpath --path --mixed "$APP_HOME"`
     CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
-
+    
     JAVACMD=`cygpath --unix "$JAVACMD"`
 
     # We build the pattern for arguments to be converted via cygpath

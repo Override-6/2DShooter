@@ -1,3 +1,6 @@
-include 'desktop', 'core', 'api'
-include 'GameServer'
+rootProject.name = '2DShooter'
+include 'API'
+include 'Core'
+include 'Desktop'
+include 'Server'
 
