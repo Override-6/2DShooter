@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2
 import fr.overrride.game.shooter.api.other.actions.RestAction
 import fr.overrride.game.shooter.api.session.ParticleManager
 
-object ServerSideParticleManager extends ParticleManager {
+class ServerSideParticleManager extends ParticleManager {
 
     private final val NoEffect = RestAction.build(new ParticleEffect())
 

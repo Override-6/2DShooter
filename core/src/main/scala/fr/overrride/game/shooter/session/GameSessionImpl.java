@@ -20,6 +20,7 @@ public class GameSessionImpl implements GameSession {
     private final Set<Controllable<?>> players = new HashSet<>();
 
     private final SceneManager sceneManager = new SceneManager();
+    @Synchronized
     private final ParticleManager particleManager;
     private final int maxPlayers;
     private Level level;

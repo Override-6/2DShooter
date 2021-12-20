@@ -44,8 +44,9 @@ object GameServer {
         val global              = connection.network.globalCache
         val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
 
+
         val gameSession         = cache
-                .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, ServerSideParticleManager))
+                .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, new ServerSideParticleManager))
         val col = traffic.defaultPersistenceConfig.contextualObjectLinker
         col += (700, gameSession.getParticleManager)
         global.setCacheChannelToPerformant(51)
