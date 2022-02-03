@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.application.connection.ExternalConnection
-import fr.linkit.api.gnom.cache.CacheSearchBehavior
+import fr.linkit.api.gnom.cache.CacheSearchMethod
 import fr.linkit.api.gnom.cache.sync.SynchronizedObjectCache
 import fr.linkit.api.gnom.cache.sync.contract.behavior.IdentifierTag
 import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER
@@ -28,7 +28,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         val center: SynchronizedObjectCache[GameSession] = connection
                 .network
                 .globalCache
-                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
+                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchMethod.GET_OR_OPEN)
         center.findObject(0).get
     }
     private val background           = new Texture("background.png")
@@ -59,7 +59,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
         connection
                 .network
                 .globalCache
-                .setCacheChannelToPerformant(51)
+                .getCacheTrafficNode(51)
+                .preferPerformances()
     }
 
     override protected def handleInputs(): Unit = {

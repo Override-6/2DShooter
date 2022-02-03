@@ -2,7 +2,7 @@ package fr.overrride.game.server
 
 import com.badlogic.gdx.backends.lwjgl.LwjglFileHandle
 import com.badlogic.gdx.graphics.{Color, Texture}
-import fr.linkit.api.gnom.cache.CacheSearchBehavior
+import fr.linkit.api.gnom.cache.CacheSearchMethod
 import fr.linkit.api.internal.system.AppLogger
 import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
 import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
@@ -22,7 +22,7 @@ object GameServer {
 
     def main(args: Array[String]): Unit = {
         val serverConfiguration = new ServerApplicationConfigBuilder {
-            override val resourceFolder: String = System.getenv("LinkitHome")
+            override val resourcesFolder: String = System.getenv("LinkitHome")
 
             pluginFolder = None
             loadSchematic = new ScalaServerAppSchematic {
@@ -42,14 +42,14 @@ object GameServer {
         val connection          = serverApp.findConnection(Port).get
         val traffic             = connection.traffic
         val global              = connection.network.globalCache
-        val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchBehavior.GET_OR_OPEN)
+        val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchMethod.GET_OR_OPEN)
 
 
         val gameSession         = cache
                 .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, new ServerSideParticleManager))
         val col = traffic.defaultPersistenceConfig.contextualObjectLinker
         col += (700, gameSession.getParticleManager)
-        global.setCacheChannelToPerformant(51)
+        global.getCacheTrafficNode(51).preferPerformances()
         AppLogger.info(s"Server Application launched on port $Port.")
 
         /*val config = new LwjglApplicationConfiguration

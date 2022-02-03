@@ -1,8 +1,8 @@
 package fr.overrride.game.shooter.session.weapons;
 
 import com.badlogic.gdx.math.Vector2;
-import fr.linkit.api.gnom.cache.sync.invokation.InvocationChoreographer;
-import fr.linkit.api.gnom.cache.sync.invokation.InvocationChoreographer$;
+import fr.linkit.api.gnom.cache.sync.invocation.InvocationChoreographer;
+import fr.linkit.api.gnom.cache.sync.invocation.InvocationChoreographer$;
 import fr.overrride.game.shooter.api.other.animations.Animator;
 import fr.overrride.game.shooter.api.other.animations.RotationAnimation;
 import fr.overrride.game.shooter.api.session.weapon.Bullet;

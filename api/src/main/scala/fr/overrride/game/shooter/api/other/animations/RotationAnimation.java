@@ -1,6 +1,6 @@
 package fr.overrride.game.shooter.api.other.animations;
 
-import fr.linkit.api.gnom.cache.sync.invokation.InvocationChoreographer$;
+import fr.linkit.api.gnom.cache.sync.invocation.InvocationChoreographer$;
 import fr.overrride.game.shooter.api.other.actions.Action;
 import fr.overrride.game.shooter.api.other.actions.ActionCompleter;
 import fr.overrride.game.shooter.api.other.actions.SimpleAction;
