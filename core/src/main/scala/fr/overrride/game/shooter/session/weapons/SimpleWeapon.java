@@ -5,9 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.MethodControl;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.api.other.util.MathUtils;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.character.Shooter;
@@ -18,14 +15,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
 import static fr.overrride.game.shooter.GameConstants.SIZE_DIVIDE;
 
 
 public class SimpleWeapon implements Weapon {
 
     private final Texture texture;
-    @Synchronized
     private Shooter owner;
     private final Muzzle muzzle;
     private float rotation = 0;
@@ -35,14 +30,14 @@ public class SimpleWeapon implements Weapon {
 
     private double lastShoot = 0;
 
-    public SimpleWeapon(@Synchronized Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
+    public SimpleWeapon(Shooter owner, Texture texture, float fireRate, Muzzle muzzle) {
         this.owner = owner;
         this.texture = texture;
         this.fireRate = fireRate;
         this.muzzle = muzzle;
     }
 
-    public SimpleWeapon(@Synchronized Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
+    public SimpleWeapon(Shooter owner, String texturePath, float fireRate, Muzzle muzzle) {
         this(owner, new Texture(Gdx.files.internal(texturePath)), fireRate, muzzle);
     }
 
@@ -53,7 +48,7 @@ public class SimpleWeapon implements Weapon {
     @Override
     public void update(float dt) {
         SynchronizedObject<ShooterCharacter> syncOwner = (SynchronizedObject<ShooterCharacter>) owner;
-        if (syncOwner.isOwnedByCurrent()) {
+        if (syncOwner.isOrigin()) {
             int mouseX = Gdx.input.getX() * SIZE_DIVIDE;
             int mouseY = Gdx.input.getY() * SIZE_DIVIDE;
             int rotation = (int) MathUtils.angle(getCenter(), new Vector2(mouseX, mouseY), 1080 - 13);
@@ -110,7 +105,6 @@ public class SimpleWeapon implements Weapon {
         //no-op
     }
 
-    @MethodControl(value = BROADCAST_IF_OWNER)
     public void setRotation(float angle) {
         rotation = angle % 360;
     }
@@ -129,7 +123,8 @@ public class SimpleWeapon implements Weapon {
         return System.currentTimeMillis() - lastShoot >= fireRate;
     }
 
-    @MethodControl(value = BasicInvocationRule.BROADCAST_IF_OWNER)
+    //@MethodControl(value = BasicInvocationRule.BROADCAST_IF_OWNER)
+    //Bullet.create will cause the bullet(s) to spawn, and this action is synchronized.
     public void shoot() {
         if (!canShoot())
             return;

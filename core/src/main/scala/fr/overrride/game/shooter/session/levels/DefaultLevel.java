@@ -2,10 +2,13 @@ package fr.overrride.game.shooter.session.levels;
 
 import com.badlogic.gdx.graphics.Color;
 import fr.linkit.api.gnom.network.ExecutorEngine;
+import fr.linkit.api.internal.concurrency.Procrastinator;
+import fr.linkit.engine.internal.concurrency.pool.HiringBusyWorkerPool;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.GameSessionObject;
 import fr.overrride.game.shooter.api.session.comps.RectangleComponent;
 import fr.overrride.game.shooter.api.session.levels.Level;
+import fr.overrride.game.shooter.session.PlayState;
 import fr.overrride.game.shooter.session.components.DangerousComponent;
 import fr.overrride.game.shooter.session.components.HealingComponent;
 import fr.overrride.game.shooter.session.items.Item;
@@ -34,7 +37,7 @@ public class DefaultLevel extends Level {
         components.add(new DangerousComponent(250, 350, 50, 30, 25));
         components.add(new RectangleComponent(250, 76, 50, 275, Color.WHITE));
         components.add(new RectangleComponent(1600, 76, 50, 275, Color.WHITE));
-        if (ExecutorEngine.currentEngine().isServer())
+        if (false && ExecutorEngine.currentEngine().isServer())
             startItemSpawning();
         return components;
     }
@@ -43,14 +46,18 @@ public class DefaultLevel extends Level {
         new Thread(() -> {
             ThreadLocalRandom random = ThreadLocalRandom.current();
             for (; ; ) {
-                int spawnSleep = random.nextInt(ITEM_SPAWN_MIN, ITEM_SPAWN_MAX);
-                sleep(spawnSleep);
-                Item item = spawnItem();
-                if (item == null)
-                    continue;
-                int lifeTime = random.nextInt(ITEM_LIFETIME_MIN, ITEM_LIFETIME_MAX);
-                sleep(lifeTime);
-                item.dispose();
+                try {
+                    int spawnSleep = random.nextInt(ITEM_SPAWN_MIN, ITEM_SPAWN_MAX);
+                    sleep(spawnSleep);
+                    Item item = spawnItem();
+                    if (item == null)
+                        continue;
+                    int lifeTime = random.nextInt(ITEM_LIFETIME_MIN, ITEM_LIFETIME_MAX);
+                    sleep(lifeTime);
+                    item.dispose();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, "Item Spawn").start();
     }

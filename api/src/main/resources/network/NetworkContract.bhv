@@ -1,0 +1,49 @@
+import fr.overrride.game.shooter.session.character.ShooterCharacter
+
+
+agreement broadcast_if_owner = {
+    if (current is owner) {accept *}
+}
+
+agreement broadcast = {
+    accept *
+}
+
+describe ShooterCharacter {
+    sync weapon
+    sync controller
+    sync dash
+
+    enable method setWeapon(sync Weapon)
+}
+
+describe SimpleWeapon {
+    sync owner
+}
+
+describe Animable {
+    enable method setLocation(float, float) as broadcast_if_owner
+    enable method setRotation(float) as broadcast_if_owner
+    enable method setSize(float, float) as broadcast_if_owner
+}
+
+describe GameSessionImpl {
+    sync particleManager
+    enable method addCharacter(sync Character)
+    enable method addObject(GameSessionObject) as broadcast_if_owner
+    enable method removeObject(GameSessionObject) as broadcast_if_root_owner
+}
+
+describe RectangleComponent {
+    sync position
+}
+
+describe LivingEntity {
+    foreach method enable as broadcast_if_owner
+    disable method getHealth
+    disable method getMaxHealth
+}
+
+describe Character {
+    enable method dash as broadcast_if_owner
+}

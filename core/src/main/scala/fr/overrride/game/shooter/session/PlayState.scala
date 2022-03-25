@@ -3,32 +3,28 @@ package fr.overrride.game.shooter.session
 import com.badlogic.gdx.Input.Keys._
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.{Color, Texture}
-import com.badlogic.gdx.math.Vector2
 import fr.linkit.api.application.connection.ExternalConnection
 import fr.linkit.api.gnom.cache.CacheSearchMethod
 import fr.linkit.api.gnom.cache.sync.SynchronizedObjectCache
-import fr.linkit.api.gnom.cache.sync.contract.behavior.IdentifierTag
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER
 import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
-import fr.linkit.engine.gnom.cache.sync.contract.descriptor.ContractDescriptorDataBuilder
-import fr.linkit.engine.gnom.cache.sync.contract.descriptor.ContractDescriptorDataBuilder.MethodBehaviorBuilder
 import fr.linkit.engine.internal.concurrency.pool.HiringBusyWorkerPool
+import fr.linkit.engine.internal.language.bhv.{Contract, ObjectsProperty}
 import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.{KeyControl, KeyType}
-import fr.overrride.game.shooter.session.PlayState.gameSessionBehavior
 import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
 import fr.overrride.game.shooter.session.levels.DefaultLevel
-import fr.overrride.game.shooter.session.weapons.SimpleWeapon
 class PlayState(val connection: ExternalConnection) extends ScreenState {
 
     prepareGNOL()
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel, new ParticleManagerImpl()) else {
+        val network = connection.network
+        val contracts = Contract("/network/NetworkContract.bhv")(connection.getApp, ObjectsProperty.default(network))
         val center: SynchronizedObjectCache[GameSession] = connection
                 .network
                 .globalCache
-                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](gameSessionBehavior), CacheSearchMethod.GET_OR_OPEN)
+                .attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
         center.findObject(0).get
     }
     private val background           = new Texture("background.png")
@@ -88,27 +84,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 }
 
 object PlayState {
-    import fr.linkit.engine.gnom.cache.sync.contract.description.SyncObjectDescription.fromTag
 
     final var lwjglProcrastinator: HiringBusyWorkerPool = _
-    final lazy val gameSessionBehavior                  = new ContractDescriptorDataBuilder {
-        describe(new ClassDescriptor[ShooterCharacter]() {
-            enable method "damage" and "setWeapon" and "dash" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
-                withProcrastinator(lwjglProcrastinator)
-            }
-            enable method "makeWalkingEffect" as new MethodBehaviorBuilder(agreement => agreement.acceptAll().discard(IdentifierTag("GameServer"))) {
-                withProcrastinator(lwjglProcrastinator)
-            }
-        })
-        describe(new ClassDescriptor[SimpleWeapon]() {
-            enable method "shoot" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {
-                withProcrastinator(lwjglProcrastinator)
-                mustForceLocalInvocation()
-            }
-        })
-        describe(new ClassDescriptor[Vector2]() {
-            enable method "set" as new MethodBehaviorBuilder(BROADCAST_IF_OWNER) {}
-        })
-    }.build()
 
 }

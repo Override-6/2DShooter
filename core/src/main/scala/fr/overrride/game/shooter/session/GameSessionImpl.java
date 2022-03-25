@@ -20,7 +20,6 @@ public class GameSessionImpl implements GameSession {
     private final Set<Controllable<?>> players = new HashSet<>();
 
     private final SceneManager sceneManager = new SceneManager();
-    @Synchronized
     private final ParticleManager particleManager;
     private final int maxPlayers;
     private Level level;
@@ -43,8 +42,7 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(value = BasicInvocationRule.BROADCAST)
-    public void addCharacter(@Synchronized Character character) {
+    public void addCharacter(Character character) {
         if (players.size() > maxPlayers)
             throw new IllegalArgumentException("Player limit reached !");
 
@@ -72,13 +70,11 @@ public class GameSessionImpl implements GameSession {
     }
 
     @Override
-    @MethodControl(value = BasicInvocationRule.BROADCAST_IF_ROOT_OWNER)
     public void addObject(GameSessionObject object) {
         sceneManager.addObject(object);
     }
 
     @Override
-    @MethodControl(value = BasicInvocationRule.BROADCAST_IF_ROOT_OWNER)
     public void removeObject(GameSessionObject object) {
         if (object instanceof Controllable) {
             players.remove(object);

@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import fr.linkit.api.gnom.cache.sync.SynchronizedObject;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.MethodControl;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.GameConstants;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.abilities.Ability;
@@ -20,19 +18,14 @@ import fr.overrride.game.shooter.api.session.weapon.Weapon;
 import fr.overrride.game.shooter.session.abilities.Dash;
 import fr.overrride.game.shooter.session.components.ProgressBar;
 import fr.overrride.game.shooter.session.items.ItemType;
-import fr.overrride.game.shooter.session.weapons.SimpleWeapon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule.BROADCAST_IF_OWNER;
-
 
 public class ShooterCharacter extends RectangleComponent implements Character, Collidable {
 
-    @Synchronized
     private Weapon weapon;
-    @Synchronized
     private transient Controller<Character> controller = null;
     private GameSession session = null;
     private final AxisController axisController;
@@ -42,7 +35,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     private boolean isOnGround = false;
     private final Vector2 velocity, lastPosition, lastVelocity;
 
-    @Synchronized
     private final Ability dash;
 
     public static final float GRAVITY = 100;
@@ -69,10 +61,10 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     public void update(float deltaTime) {
         SynchronizedObject<ShooterCharacter> thisWrapper = (SynchronizedObject<ShooterCharacter>) this;
         boolean moved = ((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y));
-        if (moved && thisWrapper.isOwnedByCurrent()) {
+        if (moved && thisWrapper.isOrigin()) {
             position.set(position.x, position.y); //refreshing remote positions
         }
-        if (thisWrapper.isOwnedByCurrent()) {
+        if (thisWrapper.isOrigin()) {
             lastPosition.set(position);
             lastVelocity.set(velocity);
             handleFriction();
@@ -101,7 +93,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER)
     public void dash() {
         dash.use();
     }
@@ -152,8 +143,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER)
-    public void setWeapon(@Synchronized Weapon weapon) {
+    public void setWeapon(Weapon weapon) {
         this.weapon.dispose();
         weapon.setGameSession(session);
         this.weapon = weapon;
@@ -226,7 +216,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER)
     public void damage(float f) {
         healthBar.setProgress(healthBar.getProgress() - f);
         if (getHealth() <= 0)
@@ -234,14 +223,12 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER)
     public void heal(float f) {
         if (getHealth() <= MAX_HEALTH)
             healthBar.setProgress(healthBar.getProgress() + f);
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER)
     public void setHealth(float f) {
         healthBar.setProgress(f);
         if (getHealth() <= 0)
@@ -250,7 +237,6 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     }
 
     @Override
-    @MethodControl(value = BROADCAST_IF_OWNER)
     public void kill() {
         getCurrentGameSession().ifPresent(session -> {
             session.getParticleManager()
