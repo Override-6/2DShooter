@@ -20,7 +20,7 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     prepareGNOL()
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel, new ParticleManagerImpl()) else {
         val network = connection.network
-        val contracts = Contract("/network/NetworkContract.bhv")(connection.getApp, ObjectsProperty.default(network))
+        val contracts = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(connection.getApp, ObjectsProperty.default(network))
         val center: SynchronizedObjectCache[GameSession] = connection
                 .network
                 .globalCache

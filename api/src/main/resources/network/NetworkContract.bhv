@@ -1,8 +1,19 @@
 import fr.overrride.game.shooter.session.character.ShooterCharacter
-
+import fr.overrride.game.shooter.session.weapons.SimpleWeapon
+import fr.overrride.game.shooter.api.other.animations.Animable
+import fr.overrride.game.shooter.session.GameSessionImpl
+import fr.overrride.game.shooter.api.session.comps.RectangleComponent
+import fr.overrride.game.shooter.api.session.character.LivingEntity
+import fr.overrride.game.shooter.api.session.character.Character
+import fr.overrride.game.shooter.api.session.GameSessionObject
+import fr.overrride.game.shooter.api.session.weapon.Weapon
 
 agreement broadcast_if_owner = {
     if (current is owner) {accept *}
+}
+
+agreement broadcast_if_root_owner = {
+    if (current is root_owner) {accept *}
 }
 
 agreement broadcast = {
@@ -14,7 +25,7 @@ describe ShooterCharacter {
     sync controller
     sync dash
 
-    enable method setWeapon(sync Weapon)
+    setWeapon(sync Weapon)
 }
 
 describe SimpleWeapon {
@@ -22,16 +33,17 @@ describe SimpleWeapon {
 }
 
 describe Animable {
-    enable method setLocation(float, float) as broadcast_if_owner
-    enable method setRotation(float) as broadcast_if_owner
-    enable method setSize(float, float) as broadcast_if_owner
+    setLocation(float, float) as broadcast_if_owner
+    setRotation(float) as broadcast_if_owner
+    setSize(float, float) as broadcast_if_owner
 }
 
 describe GameSessionImpl {
     sync particleManager
-    enable method addCharacter(sync Character)
-    enable method addObject(GameSessionObject) as broadcast_if_owner
-    enable method removeObject(GameSessionObject) as broadcast_if_root_owner
+
+    addCharacter(sync Character)
+    addObject(GameSessionObject) as broadcast_if_owner
+    removeObject(GameSessionObject) as broadcast_if_root_owner
 }
 
 describe RectangleComponent {
@@ -40,10 +52,10 @@ describe RectangleComponent {
 
 describe LivingEntity {
     foreach method enable as broadcast_if_owner
-    disable method getHealth
-    disable method getMaxHealth
+    getHealth
+    getMaxHealth
 }
 
 describe Character {
-    enable method dash as broadcast_if_owner
+    enable dash as broadcast_if_owner
 }

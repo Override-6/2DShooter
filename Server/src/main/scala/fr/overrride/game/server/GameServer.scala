@@ -6,6 +6,7 @@ import fr.linkit.api.gnom.cache.CacheSearchMethod
 import fr.linkit.api.internal.system.AppLogger
 import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
 import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
+import fr.linkit.engine.internal.language.bhv.{Contract, ObjectsProperty}
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
@@ -41,13 +42,14 @@ object GameServer {
             classOf[Color])
         val connection          = serverApp.findConnection(Port).get
         val traffic             = connection.traffic
-        val global              = connection.network.globalCache
-        val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](PlayState.gameSessionBehavior), CacheSearchMethod.GET_OR_OPEN)
+        val network             = connection.network
+        val global              = network.globalCache
+        val contracts           = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(connection.getApp, ObjectsProperty.default(network))
+        val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
 
-
-        val gameSession         = cache
+        val gameSession = cache
                 .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, new ServerSideParticleManager))
-        val col = traffic.defaultPersistenceConfig.contextualObjectLinker
+        val col         = traffic.defaultPersistenceConfig.contextualObjectLinker
         col += (700, gameSession.getParticleManager)
         global.getCacheTrafficNode(51).preferPerformances()
         AppLogger.info(s"Server Application launched on port $Port.")

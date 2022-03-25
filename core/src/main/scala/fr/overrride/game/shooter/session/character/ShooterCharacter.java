@@ -60,7 +60,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     @Override
     public void update(float deltaTime) {
         SynchronizedObject<ShooterCharacter> thisWrapper = (SynchronizedObject<ShooterCharacter>) this;
-        boolean moved = ((int) lastPosition.x) != ((int) position.x) || (((int) lastPosition.y) != ((int) position.y));
+        boolean moved = !velocity.isZero();
         if (moved && thisWrapper.isOrigin()) {
             position.set(position.x, position.y); //refreshing remote positions
         }
@@ -110,11 +110,10 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     @Override
     public void jump() {
 
-        if (isOnGround)
-            airJumps = 0;
+        if (isOnGround) airJumps = 0;
         else airJumps++;
 
-        if (airJumps >= 2)
+        if (airJumps > 2)
             return;
 
         velocity.y += JUMP_HEIGHT;
@@ -291,8 +290,8 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
         float boxWidth = hitBox.width;
         float boxHeight = hitBox.height;
 
-        boolean top = lastPosition.y >= boxY + boxHeight;
-        boolean bottom = lastPosition.y + height <= boxY;
+        boolean top = lastPosition.y >= boxY;
+        boolean bottom = lastPosition.y - height <= boxY;
         boolean right = lastPosition.x >= boxX + boxWidth - 15;
         boolean left = lastPosition.x + width - 15 <= boxX;
 
@@ -332,8 +331,10 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
             velocity.setZero();
             position.y = GameConstants.VIEWPORT_HEIGHT - PLAYER_DIM;
         }
-        if (position.y < 0) {
-            velocity.setZero();
+        if (position.y < 75) {
+            airJumps = 0;
+            isOnGround = true;
+            velocity.y = 0;
             position.y = 76;
         }
     }

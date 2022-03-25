@@ -1,9 +1,6 @@
 package fr.overrride.game.shooter.session;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.BasicInvocationRule;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.MethodControl;
-import fr.linkit.api.gnom.cache.sync.contract.behavior.annotation.Synchronized;
 import fr.overrride.game.shooter.api.session.GameSession;
 import fr.overrride.game.shooter.api.session.GameSessionObject;
 import fr.overrride.game.shooter.api.session.ParticleManager;
