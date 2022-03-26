@@ -24,6 +24,7 @@ describe ShooterCharacter {
     sync weapon
     sync controller
     sync dash
+    sync position
 
     setWeapon(sync Weapon)
 }
@@ -41,7 +42,7 @@ describe Animable {
 describe GameSessionImpl {
     sync particleManager
 
-    addCharacter(sync Character)
+    addCharacter(sync Character) as broadcast
     addObject(GameSessionObject) as broadcast_if_owner
     removeObject(GameSessionObject) as broadcast_if_root_owner
 }
