@@ -34,7 +34,8 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     camera.setToOrtho(false, GameConstants.VIEWPORT_WIDTH, GameConstants.VIEWPORT_HEIGHT)
 
     private def createPlayers(): Unit = {
-        val player1    = new ShooterCharacter(500 + (session.countPlayers() * 100), 75, Color.GREEN)
+        val playerCount = session.countPlayers()
+        val player1    = new ShooterCharacter(500 + (playerCount * 100), 75, Color.GREEN)
         val controller = new CharacterController(player1)
         controller.addKeyControl(KeyControl.of(KeyType.DASH, A, _.dash()))
         controller.addKeyControl(KeyControl.of(KeyType.JUMP, SPACE, _.jump()))

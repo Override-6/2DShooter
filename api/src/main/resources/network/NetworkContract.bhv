@@ -7,20 +7,15 @@ import fr.overrride.game.shooter.api.session.character.LivingEntity
 import fr.overrride.game.shooter.api.session.character.Character
 import fr.overrride.game.shooter.api.session.GameSessionObject
 import fr.overrride.game.shooter.api.session.weapon.Weapon
-
+import fr.overrride.game.shooter.session.character.CharacterController
+import fr.overrride.game.shooter.api.session.GameSession
 import com.badlogic.gdx.math.Vector2
+import fr.overrride.game.shooter.api.other.GraphicComponent
 
-agreement broadcast_if_owner = {
-    if (current is owner) {accept *}
-}
-
-agreement broadcast_if_root_owner = {
-    if (current is root_owner) {accept *}
-}
-
-agreement broadcast = {
-    accept *
-}
+agreement broadcast_if_owner = if (current is owner) {accept *}
+agreement broadcast_if_root_owner = if (current is root_owner) {accept *}
+agreement broadcast = accept *
+agreement only_owner = discard * -> accept owner
 
 describe ShooterCharacter {
     sync weapon
@@ -44,21 +39,33 @@ describe Animable {
 describe Vector2 {
     set(float, float) as broadcast_if_owner
     set(Vector2) as broadcast_if_owner
+}
 
+describe CharacterController {
+    sync character
 }
 
 describe GameSessionImpl {
     sync particleManager
 
+}
+
+describe GraphicComponent {
+    foreach method disable
+}
+
+describe GameSession {
+    foreach method enable as only_owner
+
     addCharacter(sync Character) as broadcast
-    addObject(GameSessionObject) as broadcast_if_owner
+    addObject(GameSessionObject) as broadcast
     removeObject(GameSessionObject) as broadcast_if_root_owner
 }
 
 describe LivingEntity {
     foreach method enable as broadcast_if_owner
-    getHealth
-    getMaxHealth
+    enable getHealth
+    enable getMaxHealth
 }
 
 describe Character {
