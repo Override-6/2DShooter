@@ -8,6 +8,8 @@ import fr.overrride.game.shooter.api.session.character.Character
 import fr.overrride.game.shooter.api.session.GameSessionObject
 import fr.overrride.game.shooter.api.session.weapon.Weapon
 
+import com.badlogic.gdx.math.Vector2
+
 agreement broadcast_if_owner = {
     if (current is owner) {accept *}
 }
@@ -39,16 +41,18 @@ describe Animable {
     setSize(float, float) as broadcast_if_owner
 }
 
+describe Vector2 {
+    set(float, float) as broadcast_if_owner
+    set(Vector2) as broadcast_if_owner
+
+}
+
 describe GameSessionImpl {
     sync particleManager
 
     addCharacter(sync Character) as broadcast
     addObject(GameSessionObject) as broadcast_if_owner
     removeObject(GameSessionObject) as broadcast_if_root_owner
-}
-
-describe RectangleComponent {
-    sync position
 }
 
 describe LivingEntity {

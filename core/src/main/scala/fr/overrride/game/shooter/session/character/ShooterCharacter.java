@@ -113,8 +113,8 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
         if (isOnGround) airJumps = 0;
         else airJumps++;
 
-        if (airJumps > 2)
-            return;
+        //if (airJumps > 2)
+        //    return;
 
         velocity.y += JUMP_HEIGHT;
 
