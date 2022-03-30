@@ -3,4 +3,5 @@ include 'API'
 include 'Core'
 include 'Desktop'
 include 'Server'
+include 'Linkit Tests'
 

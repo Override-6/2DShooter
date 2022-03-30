@@ -48,7 +48,7 @@ public class ShooterCharacter extends RectangleComponent implements Character, C
     public ShooterCharacter(float x, float y, Color color) {
         super(x, y, PLAYER_DIM, PLAYER_DIM, color);
 
-        weapon = ItemType.SHOTGUN.asWeapon(this);
+        weapon = null; //ItemType.SHOTGUN.asWeapon(this);
         velocity = new Vector2();
         lastPosition = new Vector2(position);
         lastVelocity = new Vector2();
