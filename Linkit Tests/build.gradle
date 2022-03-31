@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    implementation 'org.jetbrains:annotations:16.0.2'
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation group: 'org.scala-lang', name: 'scala-library', version: '2.13.6'
+    implementation group: 'org.scala-lang', name: 'scala-reflect', version: '2.13.6'
+    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\API\\build\\libs')
+    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\Engine\\build\\libs')
+    implementation fileTree(include: ['*.jar'], dir: 'C:\\Users\\maxim\\IdeaProjects\\Linkit\\Server\\build\\libs')
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.6'
+    implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
+    implementation group: 'com.jcabi', name: 'jcabi-log', version: '0.19.0'
+    implementation group: 'org.scala-lang.modules', name: 'scala-parser-combinators_2.13', version: '2.1.0'
+
+    implementation project(':API')
+    implementation project(':Core')
+    implementation project(':Server')
+    implementation project(':Desktop')
+}
+
+test {
+    useJUnitPlatform()
+}
