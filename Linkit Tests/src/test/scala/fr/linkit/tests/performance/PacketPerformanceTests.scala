@@ -14,8 +14,8 @@ import fr.linkit.engine.gnom.cache.sync.DefaultSynchronizedObjectCache
 import fr.linkit.engine.gnom.cache.sync.instantiation.Constructor
 import fr.linkit.engine.gnom.packet.fundamental.EmptyPacket
 import fr.linkit.engine.gnom.packet.fundamental.RefPacket.ObjectPacket
+import fr.linkit.engine.gnom.packet.traffic.ChannelScopes
 import fr.linkit.engine.gnom.packet.traffic.channel.SyncAsyncPacketChannel
-import fr.linkit.engine.gnom.packet.traffic.{ChannelScopes, DefaultChannelPacketBundle}
 import fr.linkit.engine.internal.language.bhv.{Contract, ObjectsProperty}
 import fr.linkit.server.ServerApplication
 import fr.linkit.server.config.schematic.ScalaServerAppSchematic
@@ -57,19 +57,15 @@ class PacketPerformanceTests {
             val col             = traffic.defaultPersistenceConfig.contextualObjectLinker
             col += (700, particleManager)
             col += (701, lwjglProcrastinator)
-            val session = cache
-                .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, particleManager))
-            createPlayer(session)
 
-            var count = 0
-            println("Client connected!")
-            channel.addAsyncListener { case DefaultChannelPacketBundle(_, packet, attributes, _) =>
-                count += 1
-                println(s"count: $count")
-                if (count != 500)
-                    channel.sendAsync(packet, attributes)
+            for (i <- 0 to 500) serverConnection.runLater {
+                println(s"TASK: $i")
+                val session = cache
+                        .syncObject(i, Constructor[GameSessionImpl](3, new DefaultLevel, particleManager))
+                createPlayer(session)
+                channel.sendSync(ObjectPacket(session))
+                println(s"TASK $i ended")
             }
-            channel.sendAsync(ObjectPacket(session))
         }
         lwjglProcrastinator.pauseCurrentTask()
     }
@@ -105,16 +101,15 @@ class PacketPerformanceTests {
         val contracts  = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(clientConnection.getApp, properties)
         val cache      = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
 
-
         clientConnection.runLater {
-            cache
             channel.sendSync(EmptyPacket)
-            var count = 0
-            channel.addAsyncListener { case DefaultChannelPacketBundle(_, packet, attributes, _) =>
-                count += 1
-                println(s"count: $count")
-                if (count != 500)
-                    channel.sendAsync(packet, attributes)
+
+            for (i <- 0 to 100) clientConnection.runLater {
+                println(s"TASK: $i")
+                val obj0 = channel.nextSync[ObjectPacket].value
+                val obj  = cache.findObject(i).get
+                assert(obj eq obj0)
+                println(s"TASK $i ended")
             }
         }
         lwjglProcrastinator.pauseCurrentTask()
@@ -136,6 +131,7 @@ object PacketPerformanceTests {
                 servers += new ServerConnectionConfigBuilder {
                     override val identifier: String = ServerName
                     override val port      : Int    = Port
+                    nWorkerThreadFunction = _ * 2 + 5
                     defaultPersistenceConfigScript = Some(getClass.getResource("/libgdx_persistence_config_server.sc"))
                 }
             }
@@ -161,6 +157,7 @@ object PacketPerformanceTests {
                 clients += new ClientConnectionConfigBuilder {
                     override val identifier   : String            = clientIdentifier
                     override val remoteAddress: InetSocketAddress = new InetSocketAddress("localhost", Port)
+                    nWorkerThreadFunction = _ * 2 + 5
                     defaultPersistenceConfigScript = Some(getClass.getResource("/libgdx_persistence_config_client.sc"))
                 }
             }

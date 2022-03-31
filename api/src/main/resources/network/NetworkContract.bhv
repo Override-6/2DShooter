@@ -42,7 +42,7 @@ describe Animable {
     setSize(float, float) as broadcast_if_owner
 }
 
-describe mirroring Vector2 {
+describe Vector2 {
     foreach method enable as broadcast_if_owner
     set(float, float) as broadcast_if_owner
     set(Vector2) as broadcast_if_owner
