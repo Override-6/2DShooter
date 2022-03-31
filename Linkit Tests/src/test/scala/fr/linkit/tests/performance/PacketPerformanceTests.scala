@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.{Color, Texture}
 import fr.linkit.api.application.connection.ExternalConnection
 import fr.linkit.api.gnom.cache.CacheSearchMethod
 import fr.linkit.api.gnom.packet.Packet
+import fr.linkit.api.internal.system.AppLogger
 import fr.linkit.client.ClientApplication
 import fr.linkit.client.config.schematic.ScalaClientAppSchematic
 import fr.linkit.client.config.{ClientApplicationConfigBuilder, ClientConnectionConfigBuilder}
@@ -24,6 +25,7 @@ import fr.overrride.game.server.ServerSideParticleManager
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.{KeyControl, KeyType}
 import fr.overrride.game.shooter.session.GameSessionImpl
+import fr.overrride.game.shooter.session.PlayState.lwjglProcrastinator
 import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
 import fr.overrride.game.shooter.session.levels.DefaultLevel
 import org.junit.jupiter.api.Test
@@ -33,25 +35,33 @@ import java.util.concurrent.ThreadLocalRandom
 
 class PacketPerformanceTests {
 
+    AppLogger.printTraffic = true
+
     @Test
     def server(): Unit = {
+        lwjglProcrastinator.hireCurrentThread()
         val serverConnection = PacketPerformanceTests.serverConnection()
         serverConnection.runLater {
-            val network   = serverConnection.network
-            val global    = network.globalCache
-            val traffic   = serverConnection.traffic
-            val contracts = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(serverConnection.getApp, ObjectsProperty.default(network))
-            val cache     = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
-            val session   = cache
-                    .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, new ServerSideParticleManager()))
-            val col       = traffic.defaultPersistenceConfig.contextualObjectLinker
-            col += (700, session.getParticleManager)
-            createPlayer(session)
-
-            var count   = 0
             val channel = serverConnection.traffic.getInjectable[SyncAsyncPacketChannel](101, SyncAsyncPacketChannel, ChannelScopes.discardCurrent)
             println("waiting for client...")
             channel.nextSync[Packet]
+
+            val network    = serverConnection.network
+            val global     = network.globalCache
+            val traffic    = serverConnection.traffic
+            val properties = ObjectsProperty.default(network) + ObjectsProperty(Map("lwjgl" -> lwjglProcrastinator))
+            val contracts  = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(serverConnection.getApp, properties)
+            val cache      = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
+
+            val particleManager = new ServerSideParticleManager
+            val col             = traffic.defaultPersistenceConfig.contextualObjectLinker
+            col += (700, particleManager)
+            col += (701, lwjglProcrastinator)
+            val session = cache
+                .syncObject(0, Constructor[GameSessionImpl](3, new DefaultLevel, particleManager))
+            createPlayer(session)
+
+            var count = 0
             println("Client connected!")
             channel.addAsyncListener { case DefaultChannelPacketBundle(_, packet, attributes, _) =>
                 count += 1
@@ -61,7 +71,7 @@ class PacketPerformanceTests {
             }
             channel.sendAsync(ObjectPacket(session))
         }
-        this.synchronized(wait())
+        lwjglProcrastinator.pauseCurrentTask()
     }
 
     private def createPlayer(session: GameSession): Unit = {
@@ -81,14 +91,23 @@ class PacketPerformanceTests {
     @Test
     def client(): Unit = {
         val clientConnection = PacketPerformanceTests.clientConnection()
+        lwjglProcrastinator.hireCurrentThread()
         val channel = clientConnection.traffic.getInjectable[SyncAsyncPacketChannel](101, SyncAsyncPacketChannel, ChannelScopes.discardCurrent)
-        val network   = clientConnection.network
-        val global    = network.globalCache
-        val traffic   = clientConnection.traffic
-        val contracts = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(clientConnection.getApp, ObjectsProperty.default(network))
-        val cache     = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
+        val network = clientConnection.network
+        val global  = network.globalCache
+
+        val traffic = clientConnection.traffic
+        val col     = traffic.defaultPersistenceConfig.contextualObjectLinker
+        col += (700, new ServerSideParticleManager)
+        col += (701, lwjglProcrastinator)
+
+        val properties = ObjectsProperty.default(network) + ObjectsProperty(Map("lwjgl" -> lwjglProcrastinator))
+        val contracts  = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(clientConnection.getApp, properties)
+        val cache      = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
+
 
         clientConnection.runLater {
+            cache
             channel.sendSync(EmptyPacket)
             var count = 0
             channel.addAsyncListener { case DefaultChannelPacketBundle(_, packet, attributes, _) =>
@@ -98,7 +117,7 @@ class PacketPerformanceTests {
                     channel.sendAsync(packet, attributes)
             }
         }
-        this.synchronized(wait())
+        lwjglProcrastinator.pauseCurrentTask()
     }
 
 }

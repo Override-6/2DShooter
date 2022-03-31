@@ -3,7 +3,6 @@ package fr.overrride.game.shooter
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.{ApplicationAdapter, Gdx}
 import fr.linkit.api.application.connection.ExternalConnection
-import fr.linkit.engine.internal.concurrency.pool.HiringBusyWorkerPool
 import fr.overrride.game.shooter.api.other.states.GameStateManager
 import fr.overrride.game.shooter.session.PlayState
 
@@ -13,9 +12,7 @@ class GameAdapter(val serverConnection: ExternalConnection) extends ApplicationA
     private var batch: SpriteBatch = _
 
     override def create(): Unit = {
-        val pool = new HiringBusyWorkerPool("LWJGL Pool")
-        PlayState.lwjglProcrastinator = pool
-        pool.hireCurrentThread()
+        PlayState.lwjglProcrastinator.hireCurrentThread()
         manager.push(new PlayState(serverConnection))
         batch = new SpriteBatch
         Gdx.app
