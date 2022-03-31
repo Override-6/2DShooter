@@ -28,6 +28,7 @@ describe ShooterCharacter {
 }
 
 describe ParticleManager {
+    [procrastinator = @lwjgl]
     foreach method enable as broadcast
 }
 
@@ -41,7 +42,8 @@ describe Animable {
     setSize(float, float) as broadcast_if_owner
 }
 
-describe Vector2 {
+describe mirroring Vector2 {
+    foreach method enable as broadcast_if_owner
     set(float, float) as broadcast_if_owner
     set(Vector2) as broadcast_if_owner
 }

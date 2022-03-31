@@ -13,6 +13,7 @@ import fr.overrride.game.shooter.GameConstants
 import fr.overrride.game.shooter.api.other.states.ScreenState
 import fr.overrride.game.shooter.api.session.GameSession
 import fr.overrride.game.shooter.api.session.character.{KeyControl, KeyType}
+import fr.overrride.game.shooter.session.PlayState.lwjglProcrastinator
 import fr.overrride.game.shooter.session.character.{CharacterController, ShooterCharacter}
 import fr.overrride.game.shooter.session.levels.DefaultLevel
 class PlayState(val connection: ExternalConnection) extends ScreenState {
@@ -20,7 +21,9 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
     prepareGNOL()
     private val session: GameSession = if (connection == null) new GameSessionImpl(3, new DefaultLevel, new ParticleManagerImpl()) else {
         val network = connection.network
-        val contracts = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(connection.getApp, ObjectsProperty.default(network))
+        connection.traffic.defaultPersistenceConfig.contextualObjectLinker += (701, lwjglProcrastinator)
+        val properties = ObjectsProperty.default(network) + ObjectsProperty(Map("lwjgl" -> lwjglProcrastinator))
+        val contracts = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(connection.getApp, properties)
         val center: SynchronizedObjectCache[GameSession] = connection
                 .network
                 .globalCache
@@ -86,6 +89,5 @@ class PlayState(val connection: ExternalConnection) extends ScreenState {
 
 object PlayState {
 
-    final var lwjglProcrastinator: HiringBusyWorkerPool = _
-
+    final val lwjglProcrastinator: HiringBusyWorkerPool = new HiringBusyWorkerPool("LWJGL Pool")
 }

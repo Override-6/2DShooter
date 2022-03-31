@@ -11,6 +11,7 @@ import fr.linkit.server.ServerApplication
 import fr.linkit.server.config.schematic.ScalaServerAppSchematic
 import fr.linkit.server.config.{ServerApplicationConfigBuilder, ServerConnectionConfigBuilder}
 import fr.overrride.game.shooter.api.session.GameSession
+import fr.overrride.game.shooter.session.PlayState.lwjglProcrastinator
 import fr.overrride.game.shooter.session.levels.DefaultLevel
 import fr.overrride.game.shooter.session.{GameSessionImpl, PlayState}
 
@@ -44,7 +45,9 @@ object GameServer {
         val traffic             = connection.traffic
         val network             = connection.network
         val global              = network.globalCache
-        val contracts           = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(connection.getApp, ObjectsProperty.default(network))
+        connection.traffic.defaultPersistenceConfig.contextualObjectLinker += (701, lwjglProcrastinator)
+        val properties = ObjectsProperty.default(network) + ObjectsProperty(Map("lwjgl" -> lwjglProcrastinator))
+        val contracts           = Contract(classOf[GameSession].getResource("/network/NetworkContract.bhv"))(connection.getApp, properties)
         val cache               = global.attachToCache(51, DefaultSynchronizedObjectCache[GameSession](contracts), CacheSearchMethod.GET_OR_OPEN)
 
         val gameSession = cache
